@@ -112,14 +112,14 @@ if __name__ == '__main__':
 
     model.eval()
 
-    cap = cv2.VideoCapture('results/GP090018.MP4')
+    cap = cv2.VideoCapture('1.avi')
 
     assert cap.isOpened(), 'Cannot capture source'
 
     count = 0
     start = time.time()
 
-    mot_tracker = Sort()
+    # mot_tracker = Sort()
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -137,21 +137,21 @@ if __name__ == '__main__':
         output = write_results(output, confidence, num_classes, nms=True, nms_conf=nms_thesh)
 
         # Didn't detect anything
-        if type(output) == int:
-            boxes = np.array([])
-            labels = np.array([])
-        else:
-            output[:, 1:5] = torch.clamp(output[:, 1:5], 0.0, float(inp_dim)) / inp_dim
-
-            output[:, [1, 3]] *= frame.shape[1]
-            output[:, [2, 4]] *= frame.shape[0]
+        # if type(output) == int:
+        #     boxes = np.array([])
+        #     labels = np.array([])
+        # else:
+        #     output[:, 1:5] = torch.clamp(output[:, 1:5], 0.0, float(inp_dim)) / inp_dim
+        #
+        #     output[:, [1, 3]] *= frame.shape[1]
+        #     output[:, [2, 4]] *= frame.shape[0]
 
             boxes, labels = get_filtered_boxes(output, interested_objects)
 
-        mot_tracker.update(boxes, labels)
-    try:
-        mot_tracker.generate_csv(csv_file_path)
-
-    except:
-        print('FileName error')
+        # mot_tracker.update(boxes, labels)
+    # try:
+    #     mot_tracker.generate_csv(csv_file_path)
+    #
+    # except:
+    #     print('FileName error')
 
