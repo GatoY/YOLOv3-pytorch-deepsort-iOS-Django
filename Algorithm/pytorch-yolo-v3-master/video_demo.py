@@ -46,7 +46,7 @@ def prep_image(img, inp_dim):
 def write(x, img):
     c1 = tuple(x[1:3].int()) # left angle
     c2 = tuple(x[3:5].int()) # right angle
-    cls = int(x[-1])
+    cls = int(x[-1]) # classification
     label = "{0}".format(classes[cls])
     color = random.choice(colors)
     cv2.rectangle(img, c1, c2,color, 1)
@@ -55,6 +55,8 @@ def write(x, img):
     cv2.rectangle(img, c1, c2,color, -1)
     cv2.putText(img, label, (c1[0], c1[1] + t_size[1] + 4), cv2.FONT_HERSHEY_PLAIN, 1, [225,255,255], 1);
     return img
+
+
 
 def arg_parse():
     """
