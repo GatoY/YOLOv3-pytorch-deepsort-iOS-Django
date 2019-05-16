@@ -91,10 +91,11 @@ def unique(tensor):
     tensor_res.copy_(unique_tensor)
     return tensor_res
 
+
+# output = write_results(output, confidence, num_classes, nms=True, nms_conf=nms_thesh)
 def write_results(prediction, confidence, num_classes, nms = True, nms_conf = 0.4):
     conf_mask = (prediction[:,:,4] > confidence).float().unsqueeze(2)
     prediction = prediction*conf_mask
-    
 
     try:
         ind_nz = torch.nonzero(prediction[:,:,4]).transpose(0,1).contiguous()

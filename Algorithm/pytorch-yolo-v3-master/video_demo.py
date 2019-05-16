@@ -1,17 +1,17 @@
 from __future__ import division
 import time
 import torch
-import torch.nn as nn
 from torch.autograd import Variable
 import numpy as np
 import cv2
 from util import *
 from darknet import Darknet
 from preprocess import prep_image, inp_to_image, letterbox_image
-import pandas as pd
 import random
 import pickle as pkl
 import argparse
+import warnings
+warnings.filterwarnings("ignore")
 
 
 def get_test_input(input_dim, CUDA):
@@ -80,7 +80,9 @@ def arg_parse():
 
 if __name__ == '__main__':
     args = arg_parse()
+
     confidence = float(args.confidence)
+    #TODO
     nms_thesh = float(args.nms_thresh)
     start = 0
     num_classes = 80
@@ -98,27 +100,21 @@ if __name__ == '__main__':
 
     if CUDA:
         model.cuda()
-
     model(get_test_input(inp_dim, CUDA), CUDA)
-
     model.eval()
 
     # videofile = args.video
     videofile = 'vtest.avi'
-
     cap = cv2.VideoCapture(videofile)
-
     assert cap.isOpened(), 'Cannot capture source'
 
     frames = 0
     start = time.time()
+    print('while')
     while cap.isOpened():
-
         ret, frame = cap.read()
         if ret:
-
             img, orig_im, dim = prep_image(frame, inp_dim)
-
             im_dim = torch.FloatTensor(dim).repeat(1, 2)
 
             if CUDA:
@@ -128,7 +124,6 @@ if __name__ == '__main__':
             with torch.no_grad():
                 output = model(Variable(img), CUDA)
             output = write_results(output, confidence, num_classes, nms=True, nms_conf=nms_thesh)
-
             if type(output) == int:
                 frames += 1
                 print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
@@ -151,11 +146,12 @@ if __name__ == '__main__':
 
             classes = load_classes('data/coco.names')
             colors = pkl.load(open("pallete", "rb"))
+            np_output = output.numpy()
+            # print(np_output.shape)
+            print(np_output[0])
 
+            # np_output, [1:3] left angle, [3:5] right angle. [-1] classification
             list(map(lambda x: write(x, orig_im), output))
-
-            print(output)
-            break
             cv2.imshow("frame", orig_im)
             key = cv2.waitKey(1)
             if key & 0xFF == ord('q'):
