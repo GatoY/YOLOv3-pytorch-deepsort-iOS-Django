@@ -111,54 +111,60 @@ if __name__ == '__main__':
     frames = 0
     start = time.time()
     print('while')
+
+    classes = load_classes('data/coco.names')
+    colors = pkl.load(open("pallete", "rb"))
+
     while cap.isOpened():
         ret, frame = cap.read()
-        if ret:
-            img, orig_im, dim = prep_image(frame, inp_dim)
-            im_dim = torch.FloatTensor(dim).repeat(1, 2)
+        if not ret:
+            break
+        img, orig_im, dim = prep_image(frame, inp_dim)
+        im_dim = torch.FloatTensor(dim).repeat(1, 2)
 
-            if CUDA:
-                im_dim = im_dim.cuda()
-                img = img.cuda()
+        if CUDA:
+            im_dim = im_dim.cuda()
+            img = img.cuda()
 
-            with torch.no_grad():
-                output = model(Variable(img), CUDA)
-            output = write_results(output, confidence, num_classes, nms=True, nms_conf=nms_thesh)
-            if type(output) == int:
-                frames += 1
-                print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
-                cv2.imshow("frame", orig_im)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
-                continue
+        with torch.no_grad():
+            output = model(Variable(img), CUDA)
 
-            im_dim = im_dim.repeat(output.size(0), 1)
-            scaling_factor = torch.min(inp_dim / im_dim, 1)[0].view(-1, 1)
+        output = write_results(output, confidence, num_classes, nms=True, nms_conf=nms_thesh)
 
-            output[:, [1, 3]] -= (inp_dim - scaling_factor * im_dim[:, 0].view(-1, 1)) / 2
-            output[:, [2, 4]] -= (inp_dim - scaling_factor * im_dim[:, 1].view(-1, 1)) / 2
-
-            output[:, 1:5] /= scaling_factor
-
-            for i in range(output.shape[0]):
-                output[i, [1, 3]] = torch.clamp(output[i, [1, 3]], 0.0, im_dim[i, 0])
-                output[i, [2, 4]] = torch.clamp(output[i, [2, 4]], 0.0, im_dim[i, 1])
-
-            classes = load_classes('data/coco.names')
-            colors = pkl.load(open("pallete", "rb"))
-            np_output = output.numpy()
-            # print(np_output.shape)
-            print(np_output[0])
-
-            # np_output, [1:3] left angle, [3:5] right angle. [-1] classification
-            list(map(lambda x: write(x, orig_im), output))
-            cv2.imshow("frame", orig_im)
-            key = cv2.waitKey(1)
-            if key & 0xFF == ord('q'):
-                break
+        if type(output) == int:
             frames += 1
             print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
+            cv2.imshow("frame", orig_im)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+            continue
 
+        im_dim = im_dim.repeat(output.size(0), 1)
+        scaling_factor = torch.min(inp_dim / im_dim, 1)[0].view(-1, 1)
 
-        else:
+        output[:, [1, 3]] -= (inp_dim - scaling_factor * im_dim[:, 0].view(-1, 1)) / 2
+        output[:, [2, 4]] -= (inp_dim - scaling_factor * im_dim[:, 1].view(-1, 1)) / 2
+        output[:, 1:5] /= scaling_factor
+
+        for i in range(output.shape[0]):
+            output[i, [1, 3]] = torch.clamp(output[i, [1, 3]], 0.0, im_dim[i, 0])
+            output[i, [2, 4]] = torch.clamp(output[i, [2, 4]], 0.0, im_dim[i, 1])
+
+        detection_boxes = output.numpy()[:,(1,2,3,4,-1)]
+        print(detection_boxes)
+        # np_output, [1:3] left angle, [3:5] right angle. [-1] classification
+
+        list(map(lambda x: write(x, orig_im), output))
+        cv2.imshow("frame", orig_im)
+        key = cv2.waitKey(1)
+        if key & 0xFF == ord('q'):
             break
+        frames += 1
+        print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
+        mot_tracker.update(boxes, labels)
+        try:
+            mot_tracker.generate_csv(csv_file_path)
+
+        except:
+            print('FileName error')
+
