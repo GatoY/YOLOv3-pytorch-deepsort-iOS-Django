@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/MovingObjectDetection.iml" filepath="$PROJECT_DIR$/.idea/MovingObjectDetection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pytorch-yolo-v3-master.iml" filepath="$PROJECT_DIR$/.idea/pytorch-yolo-v3-master.iml" />
     </modules>
   </component>
 </project>
