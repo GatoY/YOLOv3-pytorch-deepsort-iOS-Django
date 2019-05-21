@@ -12,7 +12,6 @@ import pickle as pkl
 import argparse
 
 import warnings
-
 warnings.filterwarnings("ignore")
 
 
@@ -84,10 +83,10 @@ if __name__ == '__main__':
     args = arg_parse()
 
     confidence = float(args.confidence)
-    # TODO
+    #TODO
     nms_thesh = float(args.nms_thresh)
     start = 0
-    num_classes = 80
+    num_classes = 17
     CUDA = torch.cuda.is_available()
 
     print("Loading network.....")
@@ -150,7 +149,7 @@ if __name__ == '__main__':
             output[i, [1, 3]] = torch.clamp(output[i, [1, 3]], 0.0, im_dim[i, 0])
             output[i, [2, 4]] = torch.clamp(output[i, [2, 4]], 0.0, im_dim[i, 1])
 
-        detection_boxes = output.numpy()[:, (1, 2, 3, 4, -1)]
+        detection_boxes = output.numpy()[:,(1,2,3,4,-1)]
         print(detection_boxes)
         # np_output, [1:3] left angle, [3:5] right angle. [-1] classification
 
@@ -161,9 +160,35 @@ if __name__ == '__main__':
             break
         frames += 1
         print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
-        # mot_tracker.update(boxes, labels)
-        # try:
-        #     mot_tracker.generate_csv(csv_file_path)
-        #
-        # except:
-        #     print('FileName error')
+
+        encoder = gdet.create_box_encoder(model_filename, batch_size=1)
+
+        features = encoder(orig_im, boxs)
+        print(features)
+        # score to 1.0 here).
+        detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxs, features)]
+
+        # Run non-maxima suppression.
+        boxes = np.array([d.tlwh for d in detections])
+        scores = np.array([d.confidence for d in detections])
+        indices = preprocessing.non_max_suppression(boxes, nms_max_overlap, scores)
+        detections = [detections[i] for i in indices]
+
+        # Call the tracker
+        tracker.predict()
+        tracker.update(detections)
+
+        for track in tracker.tracks:
+            if track.is_confirmed() and track.time_since_update > 1:
+                continue
+            bbox = track.to_tlbr()
+            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
+            cv2.putText(orig_im, str(track.track_id), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 200, (0, 255, 0), 2)
+
+        for det in detections:
+            bbox = det.to_tlbr()
+            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
+
+
+
+
