@@ -142,7 +142,6 @@ if __name__ == '__main__':
             labels = np.array([])
         else:
             output[:, 1:5] = torch.clamp(output[:, 1:5], 0.0, float(inp_dim)) / inp_dim
-
             output[:, [1, 3]] *= frame.shape[1]
             output[:, [2, 4]] *= frame.shape[0]
 

@@ -10,7 +10,9 @@ from preprocess import prep_image, inp_to_image, letterbox_image
 import random
 import pickle as pkl
 import argparse
+
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -82,7 +84,7 @@ if __name__ == '__main__':
     args = arg_parse()
 
     confidence = float(args.confidence)
-    #TODO
+    # TODO
     nms_thesh = float(args.nms_thresh)
     start = 0
     num_classes = 80
@@ -128,9 +130,7 @@ if __name__ == '__main__':
 
         with torch.no_grad():
             output = model(Variable(img), CUDA)
-
         output = write_results(output, confidence, num_classes, nms=True, nms_conf=nms_thesh)
-
         if type(output) == int:
             frames += 1
             print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
@@ -150,7 +150,7 @@ if __name__ == '__main__':
             output[i, [1, 3]] = torch.clamp(output[i, [1, 3]], 0.0, im_dim[i, 0])
             output[i, [2, 4]] = torch.clamp(output[i, [2, 4]], 0.0, im_dim[i, 1])
 
-        detection_boxes = output.numpy()[:,(1,2,3,4,-1)]
+        detection_boxes = output.numpy()[:, (1, 2, 3, 4, -1)]
         print(detection_boxes)
         # np_output, [1:3] left angle, [3:5] right angle. [-1] classification
 
@@ -161,10 +161,9 @@ if __name__ == '__main__':
             break
         frames += 1
         print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
-        mot_tracker.update(boxes, labels)
-        try:
-            mot_tracker.generate_csv(csv_file_path)
-
-        except:
-            print('FileName error')
-
+        # mot_tracker.update(boxes, labels)
+        # try:
+        #     mot_tracker.generate_csv(csv_file_path)
+        #
+        # except:
+        #     print('FileName error')
