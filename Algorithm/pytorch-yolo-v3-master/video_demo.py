@@ -11,10 +11,8 @@ import random
 import pickle as pkl
 import argparse
 
-from deep_sort import *
-
-# from deep_sort import preprocessing
-# from deep_sort import nn_matching
+from deep_sort import preprocessing
+from deep_sort import nn_matching
 from deep_sort.detection import Detection
 from deep_sort.tracker import Tracker
 from tools import generate_detections as gdet
@@ -170,16 +168,19 @@ if __name__ == '__main__':
             output[i, [1, 3]] = torch.clamp(output[i, [1, 3]], 0.0, im_dim[i, 0])
             output[i, [2, 4]] = torch.clamp(output[i, [2, 4]], 0.0, im_dim[i, 1])
 
-        boxes = output.numpy()[:,(1,2,3,4,-1)]
-        print(boxes)
+        detection_boxes = output.numpy()[:,(1,2,3,4, -1)]
+        # filter 17
+        boxes=[]
+        for box in detection_boxes:
+            if box[-1] <=18:
+                boxes.append(box[0:4])
         # np_output, [1:3] left angle, [3:5] right angle. [-1] classification
 
-        list(map(lambda x: write(x, orig_im), output))
+        # list(map(lambda x: write(x, orig_im), output))
 
 
         #TODO
         features = encoder(orig_im, boxes)
-        print(features)
         # score to 1.0 here).
         detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxes, features)]
 
@@ -193,11 +194,23 @@ if __name__ == '__main__':
         tracker.predict()
         tracker.update(detections)
 
+        # flag = 0
+        # for det in detections:
+        #     bbox = det.to_tlbr()
+        #     for b in boxes:
+        #         if bbox[0] == b[0]:
+        #             scale_w = (bbox[2]-bbox[0])/(b[2]-b[0])
+        #             scale_h = (bbox[3]-bbox[1])/(b[3]-b[1])
+        #             flag = 1
+        #             break
+        #     if flag==1:
+        #         break
+
         for track in tracker.tracks:
             if track.is_confirmed() and track.time_since_update > 1:
                 continue
             bbox = track.to_tlbr()
-            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
+            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255,255), 2)
             cv2.putText(orig_im, str(track.track_id), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 200, (0, 255, 0), 2)
 
         for det in detections:

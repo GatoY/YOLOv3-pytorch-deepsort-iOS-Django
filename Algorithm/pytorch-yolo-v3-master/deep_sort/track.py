@@ -106,7 +106,7 @@ class Track:
 
         """
         ret = self.to_tlwh()
-        ret[2:] = ret[:2] + ret[2:]
+        # ret[2:] = ret[:2] + ret[2:]
         return ret
 
     def predict(self, kf):

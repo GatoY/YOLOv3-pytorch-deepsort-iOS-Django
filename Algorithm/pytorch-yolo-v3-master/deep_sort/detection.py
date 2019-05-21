@@ -36,7 +36,7 @@ class Detection(object):
         `(top left, bottom right)`.
         """
         ret = self.tlwh.copy()
-        ret[2:] += ret[:2]
+        # ret[2:] += ret[:2]
         return ret
 
     def to_xyah(self):

@@ -171,7 +171,7 @@ if __name__ == '__main__':
 
             boxs = list(map(lambda x: write(x), output))
             # list(map(lambda x: write(x, frame), output))
-            # print(boxs)
+            print(boxs)
 
             #########################################################
             #
@@ -200,8 +200,8 @@ if __name__ == '__main__':
             # for det in detections:
             #     bbox = det.to_tlbr()
             #     cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
-            print(bbox)
-            print(orig_im.shape)
+            # print(bbox)
+            # print(orig_im.shape)
             #########################################################
 
             cv2.imshow("frame", orig_im)
