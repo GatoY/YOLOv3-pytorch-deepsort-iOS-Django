@@ -11,6 +11,15 @@ import random
 import pickle as pkl
 import argparse
 
+from deep_sort import *
+
+# from deep_sort import preprocessing
+# from deep_sort import nn_matching
+from deep_sort.detection import Detection
+from deep_sort.tracker import Tracker
+from tools import generate_detections as gdet
+
+
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -116,6 +125,18 @@ if __name__ == '__main__':
     classes = load_classes('data/coco.names')
     colors = pkl.load(open("pallete", "rb"))
 
+    #############
+    model_filename = 'data/mars-small128.pb'
+    encoder = gdet.create_box_encoder(model_filename, batch_size=1)
+
+    max_cosine_distance = 0.3
+    nn_budget = None
+    nms_max_overlap = 1.0
+
+    metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
+    tracker = Tracker(metric)
+
+    ###############
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
@@ -149,24 +170,18 @@ if __name__ == '__main__':
             output[i, [1, 3]] = torch.clamp(output[i, [1, 3]], 0.0, im_dim[i, 0])
             output[i, [2, 4]] = torch.clamp(output[i, [2, 4]], 0.0, im_dim[i, 1])
 
-        detection_boxes = output.numpy()[:,(1,2,3,4,-1)]
-        print(detection_boxes)
+        boxes = output.numpy()[:,(1,2,3,4,-1)]
+        print(boxes)
         # np_output, [1:3] left angle, [3:5] right angle. [-1] classification
 
         list(map(lambda x: write(x, orig_im), output))
-        cv2.imshow("frame", orig_im)
-        key = cv2.waitKey(1)
-        if key & 0xFF == ord('q'):
-            break
-        frames += 1
-        print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
 
-        encoder = gdet.create_box_encoder(model_filename, batch_size=1)
 
-        features = encoder(orig_im, boxs)
+        #TODO
+        features = encoder(orig_im, boxes)
         print(features)
         # score to 1.0 here).
-        detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxs, features)]
+        detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxes, features)]
 
         # Run non-maxima suppression.
         boxes = np.array([d.tlwh for d in detections])
@@ -191,4 +206,10 @@ if __name__ == '__main__':
 
 
 
-
+        ###############
+        cv2.imshow("frame", orig_im)
+        key = cv2.waitKey(1)
+        if key & 0xFF == ord('q'):
+            break
+        frames += 1
+        print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
