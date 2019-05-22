@@ -10,6 +10,14 @@ from preprocess import prep_image, inp_to_image, letterbox_image
 import random
 import pickle as pkl
 import argparse
+
+from deep_sort import preprocessing
+from deep_sort import nn_matching
+from deep_sort.detection import Detection
+from deep_sort.tracker import Tracker
+from tools import generate_detections as gdet
+
+
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -85,7 +93,7 @@ if __name__ == '__main__':
     #TODO
     nms_thesh = float(args.nms_thresh)
     start = 0
-    num_classes = 80
+    num_classes = 17
     CUDA = torch.cuda.is_available()
 
     print("Loading network.....")
@@ -115,6 +123,18 @@ if __name__ == '__main__':
     classes = load_classes('data/coco.names')
     colors = pkl.load(open("pallete", "rb"))
 
+    #############
+    model_filename = 'data/mars-small128.pb'
+    encoder = gdet.create_box_encoder(model_filename, batch_size=1)
+
+    max_cosine_distance = 0.3
+    nn_budget = None
+    nms_max_overlap = 1.0
+
+    metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
+    tracker = Tracker(metric)
+
+    ###############
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
@@ -128,9 +148,7 @@ if __name__ == '__main__':
 
         with torch.no_grad():
             output = model(Variable(img), CUDA)
-
         output = write_results(output, confidence, num_classes, nms=True, nms_conf=nms_thesh)
-
         if type(output) == int:
             frames += 1
             print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
@@ -150,21 +168,61 @@ if __name__ == '__main__':
             output[i, [1, 3]] = torch.clamp(output[i, [1, 3]], 0.0, im_dim[i, 0])
             output[i, [2, 4]] = torch.clamp(output[i, [2, 4]], 0.0, im_dim[i, 1])
 
-        detection_boxes = output.numpy()[:,(1,2,3,4,-1)]
-        print(detection_boxes)
+        detection_boxes = output.numpy()[:,(1,2,3,4, -1)]
+        # filter 17
+        boxes=[]
+        for box in detection_boxes:
+            if box[-1] <=18:
+                boxes.append(box[0:4])
         # np_output, [1:3] left angle, [3:5] right angle. [-1] classification
 
-        list(map(lambda x: write(x, orig_im), output))
+        # list(map(lambda x: write(x, orig_im), output))
+
+
+        #TODO
+        features = encoder(orig_im, boxes)
+        # score to 1.0 here).
+        detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxes, features)]
+
+        # Run non-maxima suppression.
+        boxes = np.array([d.tlwh for d in detections])
+        scores = np.array([d.confidence for d in detections])
+        indices = preprocessing.non_max_suppression(boxes, nms_max_overlap, scores)
+        detections = [detections[i] for i in indices]
+
+        # Call the tracker
+        tracker.predict()
+        tracker.update(detections)
+
+        # flag = 0
+        # for det in detections:
+        #     bbox = det.to_tlbr()
+        #     for b in boxes:
+        #         if bbox[0] == b[0]:
+        #             scale_w = (bbox[2]-bbox[0])/(b[2]-b[0])
+        #             scale_h = (bbox[3]-bbox[1])/(b[3]-b[1])
+        #             flag = 1
+        #             break
+        #     if flag==1:
+        #         break
+
+        for track in tracker.tracks:
+            if track.is_confirmed() and track.time_since_update > 1:
+                continue
+            bbox = track.to_tlbr()
+            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255,255), 2)
+            cv2.putText(orig_im, str(track.track_id), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 200, (0, 255, 0), 2)
+
+        for det in detections:
+            bbox = det.to_tlbr()
+            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
+
+
+
+        ###############
         cv2.imshow("frame", orig_im)
         key = cv2.waitKey(1)
         if key & 0xFF == ord('q'):
             break
         frames += 1
         print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
-        mot_tracker.update(boxes, labels)
-        try:
-            mot_tracker.generate_csv(csv_file_path)
-
-        except:
-            print('FileName error')
-

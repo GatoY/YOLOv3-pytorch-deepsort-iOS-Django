@@ -89,7 +89,6 @@ def arg_parse():
 if __name__ == '__main__':
     cfgfile = "cfg/yolov3.cfg"
     weightsfile = "yolov3.weights"
-    num_classes = 80
 
     #########################################################
     # deep_sort
@@ -114,7 +113,7 @@ if __name__ == '__main__':
     start = 0
     CUDA = torch.cuda.is_available()
 
-    num_classes = 80
+    num_classes = 17
     classes = load_classes('data/coco.names')
 
     model = Darknet(cfgfile)
@@ -172,12 +171,12 @@ if __name__ == '__main__':
 
             boxs = list(map(lambda x: write(x), output))
             # list(map(lambda x: write(x, frame), output))
-            # print(boxs)
+            print(boxs)
 
             #########################################################
             #
             features = encoder(orig_im, boxs)
-            print(features)
+            # print(features)
             # score to 1.0 here).
             detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxs, features)]
 
@@ -197,11 +196,12 @@ if __name__ == '__main__':
                 bbox = track.to_tlbr()
                 cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
                 cv2.putText(orig_im, str(track.track_id), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 200, (0, 255, 0), 2)
-
-            for det in detections:
-                bbox = det.to_tlbr()
-                cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
-
+            #
+            # for det in detections:
+            #     bbox = det.to_tlbr()
+            #     cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
+            # print(bbox)
+            # print(orig_im.shape)
             #########################################################
 
             cv2.imshow("frame", orig_im)
