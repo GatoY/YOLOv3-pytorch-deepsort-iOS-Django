@@ -105,7 +105,7 @@ def create_box_encoder(model_filename, input_name="images",
         for box in boxes:
             patch = extract_image_patch(image, box, image_shape[:2])
             if patch is None:
-                print("WARNING: Failed to extract image patch: %s." % str(box))
+                # print("WARNING: Failed to extract image patch: %s." % str(box))
                 patch = np.random.uniform(
                     0., 255., image_shape).astype(np.uint8)
             image_patches.append(patch)

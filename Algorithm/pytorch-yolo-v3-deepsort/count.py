@@ -17,8 +17,8 @@ from deep_sort.detection import Detection
 from deep_sort.tracker import Tracker
 from tools import generate_detections as gdet
 
-
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     args = arg_parse()
 
     confidence = float(args.confidence)
-    #TODO
+    # TODO
     nms_thesh = float(args.nms_thresh)
     start = 0
     num_classes = 17
@@ -135,6 +135,7 @@ if __name__ == '__main__':
     tracker = Tracker(metric)
 
     ###############
+
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
@@ -151,7 +152,7 @@ if __name__ == '__main__':
         output = write_results(output, confidence, num_classes, nms=True, nms_conf=nms_thesh)
         if type(output) == int:
             frames += 1
-            print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
+            # print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
             cv2.imshow("frame", orig_im)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -168,21 +169,24 @@ if __name__ == '__main__':
             output[i, [1, 3]] = torch.clamp(output[i, [1, 3]], 0.0, im_dim[i, 0])
             output[i, [2, 4]] = torch.clamp(output[i, [2, 4]], 0.0, im_dim[i, 1])
 
-        detection_boxes = output.numpy()[:,(1,2,3,4, -1)]
+        detection_boxes = output.numpy()[:, (1, 2, 3, 4, -1)]
         # filter 17
-        boxes=[]
+        boxes = []
+        labels = []
         for box in detection_boxes:
-            if box[-1] <=18:
+            if box[-1] <= 18:
                 boxes.append(box[0:4])
+                labels.append(classes[int(box[-1])])
         # np_output, [1:3] left angle, [3:5] right angle. [-1] classification
 
         # list(map(lambda x: write(x, orig_im), output))
 
-
-        #TODO
+        # TODO
         features = encoder(orig_im, boxes)
         # score to 1.0 here).
-        detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxes, features)]
+        detections = [Detection(bbox, 1.0, feature, label) for bbox, feature, label in zip(boxes, features, labels)]
+
+
 
         # Run non-maxima suppression.
         boxes = np.array([d.tlwh for d in detections])
@@ -194,35 +198,25 @@ if __name__ == '__main__':
         tracker.predict()
         tracker.update(detections)
 
-        # flag = 0
-        # for det in detections:
-        #     bbox = det.to_tlbr()
-        #     for b in boxes:
-        #         if bbox[0] == b[0]:
-        #             scale_w = (bbox[2]-bbox[0])/(b[2]-b[0])
-        #             scale_h = (bbox[3]-bbox[1])/(b[3]-b[1])
-        #             flag = 1
-        #             break
-        #     if flag==1:
-        #         break
+        counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
 
         for track in tracker.tracks:
+            counts[track.label]+=1
             if track.is_confirmed() and track.time_since_update > 1:
                 continue
             bbox = track.to_tlbr()
-            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255,255), 2)
-            cv2.putText(orig_im, str(track.track_id), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 200, (0, 255, 0), 2)
+            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
+            cv2.putText(orig_im, str(track.label), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 200, (0, 255, 0), 2)
 
-        for det in detections:
+        for det, lab in zip(detections, labels):
             bbox = det.to_tlbr()
             cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
 
-
-
+        print(counts)
         ###############
         cv2.imshow("frame", orig_im)
         key = cv2.waitKey(1)
         if key & 0xFF == ord('q'):
             break
         frames += 1
-        print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
+        # print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
