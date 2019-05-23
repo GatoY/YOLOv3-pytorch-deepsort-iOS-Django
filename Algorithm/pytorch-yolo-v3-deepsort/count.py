@@ -41,7 +41,7 @@ def prep_image(img, inp_dim):
     """
     Prepare image for inputting to the neural network. 
     
-    Returns a Variable 
+    Returns a Variable git a
     """
 
     orig_im = img
