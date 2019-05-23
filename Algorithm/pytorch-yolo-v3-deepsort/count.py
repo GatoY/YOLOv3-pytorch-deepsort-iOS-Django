@@ -10,6 +10,7 @@ from preprocess import prep_image, inp_to_image, letterbox_image
 import random
 import pickle as pkl
 import argparse
+from recorder import Recorder
 
 from deep_sort import preprocessing
 from deep_sort import nn_matching
@@ -135,7 +136,7 @@ if __name__ == '__main__':
     tracker = Tracker(metric)
 
     ###############
-
+    records = []
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
@@ -201,6 +202,8 @@ if __name__ == '__main__':
         counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
 
         for track in tracker.tracks:
+            if track.id not in records:
+                records[track.id] = Recorder(id, track.label, frames)
             counts[track.label]+=1
             if track.is_confirmed() and track.time_since_update > 1:
                 continue
