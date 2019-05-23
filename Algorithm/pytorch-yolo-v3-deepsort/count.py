@@ -154,9 +154,9 @@ if __name__ == '__main__':
         if type(output) == int:
             frames += 1
             # print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
-            cv2.imshow("frame", orig_im)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # cv2.imshow("frame", orig_im)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
             continue
 
         im_dim = im_dim.repeat(output.size(0), 1)
@@ -197,32 +197,32 @@ if __name__ == '__main__':
         tracker.predict()
         tracker.update(detections)
 
-        counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
+        # counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
 
         for track in tracker.tracks:
             if track.track_id not in records:
                 records[track.track_id] = Recorder(track.track_id, track.label, frames)
             else:
                 records[track.track_id].update(frames)
-            counts[track.label] += 1
-            if track.is_confirmed() and track.time_since_update > 1:
-                continue
-            bbox = track.to_tlbr()
-            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
-            cv2.putText(orig_im, str(track.label), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 200, (0, 255, 0), 2)
+            # counts[track.label] += 1
+            # if track.is_confirmed() and track.time_since_update > 1:
+            #     continue
+            # bbox = track.to_tlbr()
+            # cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
+            # cv2.putText(orig_im, str(track.label), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 200, (0, 255, 0), 2)
 
-        for det, lab in zip(detections, labels):
-            bbox = det.to_tlbr()
-            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
+        # for det, lab in zip(detections, labels):
+        #     bbox = det.to_tlbr()
+        #     cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
 
-        print(counts)
+        # print(counts)
         ###############
-        cv2.imshow("frame", orig_im)
-        key = cv2.waitKey(1)
-        if key & 0xFF == ord('q'):
-            break
+        # cv2.imshow("frame", orig_im)
+        # key = cv2.waitKey(1)
+        # if key & 0xFF == ord('q'):
+        #     break
         frames += 1
-        # print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
+        print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
     counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
 
     for id in records:
