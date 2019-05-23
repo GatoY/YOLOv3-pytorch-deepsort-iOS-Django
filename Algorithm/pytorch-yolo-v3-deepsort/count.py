@@ -187,8 +187,6 @@ if __name__ == '__main__':
         # score to 1.0 here).
         detections = [Detection(bbox, 1.0, feature, label) for bbox, feature, label in zip(boxes, features, labels)]
 
-
-
         # Run non-maxima suppression.
         boxes = np.array([d.tlwh for d in detections])
         scores = np.array([d.confidence for d in detections])
@@ -204,7 +202,9 @@ if __name__ == '__main__':
         for track in tracker.tracks:
             if track.id not in records:
                 records[track.id] = Recorder(id, track.label, frames)
-            counts[track.label]+=1
+            else:
+                records[track.id].update(frames)
+            counts[track.label] += 1
             if track.is_confirmed() and track.time_since_update > 1:
                 continue
             bbox = track.to_tlbr()
@@ -223,3 +223,10 @@ if __name__ == '__main__':
             break
         frames += 1
         # print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
+    counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
+    for id in records:
+        recorder = records[id]
+        result = recorder.count()
+        if not result:
+            counts[result] += 1
+    print('result is %s' % counts)
