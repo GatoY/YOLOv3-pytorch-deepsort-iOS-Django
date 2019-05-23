@@ -77,7 +77,7 @@ def arg_parse():
     parser.add_argument("--video", dest='video', help="Video to run detection upon", default="video.avi", type=str)
     parser.add_argument("--dataset", dest="dataset", help="Dataset on which the network has been trained",
                         default="pascal")
-    parser.add_argument("--confidence", dest="confidence", help="Object Confidence to filter predictions", default=0.5)
+    parser.add_argument("--confidence", dest="confidence", help="Object Confidence to filter predictions", default=0.6)
     parser.add_argument("--nms_thresh", dest="nms_thresh", help="NMS Threshhold", default=0.4)
     parser.add_argument("--cfg", dest='cfgfile', help="Config file", default="cfg/yolov3.cfg", type=str)
     parser.add_argument("--weights", dest='weightsfile', help="weightsfile", default="yolov3.weights", type=str)
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     tracker = Tracker(metric)
 
     ###############
-    records = []
+    records = {}
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
@@ -200,10 +200,10 @@ if __name__ == '__main__':
         counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
 
         for track in tracker.tracks:
-            if track.id not in records:
-                records[track.id] = Recorder(id, track.label, frames)
+            if track.track_id not in records:
+                records[track.track_id] = Recorder(track.track_id, track.label, frames)
             else:
-                records[track.id].update(frames)
+                records[track.track_id].update(frames)
             counts[track.label] += 1
             if track.is_confirmed() and track.time_since_update > 1:
                 continue
@@ -224,9 +224,11 @@ if __name__ == '__main__':
         frames += 1
         # print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
     counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
+
     for id in records:
         recorder = records[id]
         result = recorder.count()
-        if not result:
+        print(result)
+        if result != False:
             counts[result] += 1
     print('result is %s' % counts)
