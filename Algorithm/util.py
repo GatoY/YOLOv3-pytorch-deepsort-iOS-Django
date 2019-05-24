@@ -74,7 +74,7 @@ def predict_transform(prediction, inp_dim, anchors, num_classes, CUDA = True):
 
 def load_classes(namesfile):
     fp = open(namesfile, "r")
-    names = fp.read().split("\n")[:-1]
+    names = fp.read().split("\n")
     return names
 
 def get_im_dim(im):
