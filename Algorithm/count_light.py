@@ -11,6 +11,7 @@ import random
 import pickle as pkl
 import argparse
 from recorder import Recorder
+import sqlite3
 
 from deep_sort import preprocessing
 from deep_sort import nn_matching
@@ -87,10 +88,16 @@ def arg_parse():
     return parser.parse_args()
 
 
+def database():
+    conn = sqlite3.connect("sqlite.db")  # 创建sqlite.db数据库
+    print("open database success")
+    query = """
+    );"""
+    conn.execute(query)
+    conn.close()
+
 if __name__ == '__main__':
     args = arg_parse()
-
-
 
     confidence = float(args.confidence)
     # TODO
@@ -145,7 +152,8 @@ if __name__ == '__main__':
         if frames==0:
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
             print(frame.shape)
-            out = cv2.VideoWriter(videofile.split('.')[0]+'_counted.avi', fourcc, 20, frame.shape[:2])
+            out = cv2.VideoWriter(videofile.split('.')[0]+'_counted.avi', fourcc, 20, frame.shape[:2][::-1])
+            # out = cv2.VideoWriter('output.avi', fourcc, 5, (768, 576))
         # if frames<15:
         #     frames+=1
         #     continue
@@ -212,28 +220,20 @@ if __name__ == '__main__':
             # counts[track.label] += 1
             # if track.is_confirmed() and track.time_since_update > 1:
             #     continue
-            # bbox = track.to_tlbr()
+            bbox = track.to_tlbr()
             # cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
 
-            # cv2.putText(orig_im, str(track.label), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 200, (0, 255, 0), 2)
+            cv2.putText(orig_im, str(track.label), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 200, (0, 255, 0), 2)
 
-        # for det, lab in zip(detections, labels):
-        #     bbox = det.to_tlbr()
-        #     cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
+        for det, lab in zip(detections, labels):
+            bbox = det.to_tlbr()
+            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
 
-        # print(counts)
-        ###############
-        # cv2.imshow("frame", orig_im)
-        # key = cv2.waitKey(1)
-        # if key & 0xFF == ord('q'):
-        #     break
-        out.write(orig_im)
+        out.write(frame)
         frames += 1
         print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
-
     cap.release()
     out.release()
-    cv2.destroyAllwindows()
     counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
 
     for id in records:
