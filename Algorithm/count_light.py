@@ -91,25 +91,6 @@ def arg_parse():
     return parser.parse_args()
 
 
-#
-# query  = ''' UPDATE media_media
-#           SET finished = 1,
-#           person = %s,
-#           bicycle = %s,
-#           car = %s,
-#           motorbike = %s,
-#           aeroplane = %s,
-#           bus = %s
-#           WHERE image_id = %s'''% (1,
-#                                    2,
-#                                    3,
-#                                    4,
-#                                    5,
-#                                    6,21)
-#
-# cur.execute(query).fetchone()
-
-
 def update_database(image_id, counts):
     con = sqlite3.connect("/home/ubuntu/MovingObjectDetecting/Application/imitagram/db.sqlite3")
     cur = con.cursor()
@@ -158,7 +139,7 @@ def update_database(image_id, counts):
 if __name__ == '__main__':
     args = arg_parse()
 
-    id = args.id
+    image_id = args.id
     name = args.name
     confidence = float(args.confidence)
     # TODO
@@ -302,5 +283,5 @@ if __name__ == '__main__':
         if result != False:
             counts[result] += 1
 
-    update_database(id, counts)
+    update_database(image_id, counts)
     # print('result is %s' % counts)
