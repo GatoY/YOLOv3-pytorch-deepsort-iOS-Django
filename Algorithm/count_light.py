@@ -91,7 +91,7 @@ def arg_parse():
     return parser.parse_args()
 
 
-def update_database(image_id, ):
+def update_database(image_id, counts):
     con = sqlite3.connect("/home/ubuntu/MovingObjectDetecting/Application/imitagram/db.sqlite3")
     cur = con.cursor()
     query  = ''' UPDATE media_media
