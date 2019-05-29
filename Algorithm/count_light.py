@@ -92,23 +92,47 @@ def arg_parse():
 
 
 def update_database(image_id, ):
-    def dict_factory(cursor, row):
-        d = {}
-        for idx, col in enumerate(cursor.description):
-            d[col[0]] = row[idx]
-        return d
-
-    con = sqlite3.connect("db.sqlite3")
-    con.row_factory = dict_factory
+    con = sqlite3.connect("/home/ubuntu/MovingObjectDetecting/Application/imitagram/db.sqlite3")
     cur = con.cursor()
+    query  = ''' UPDATE media_media
+              SET finished = 1,
+              person = %s,
+              bicycle = %s,
+              car = %s,
+              motorbike = %s,
+              aeroplane = %s,
+              bus = %s,
+              train = %s,
+              truck = %s,
+              boat = %s,
+              traffic_light = %s,
+              fire_hydrant = %s,
+              stop_sign = %s,
+              parking_meter = %s,
+              bench = %s,
+              bird = %s,
+              cat = %s,
+              dog = %s
+              WHERE image_id = %s'''% (counts['person'],
+                                       counts['bicycle'],
+                                       counts['car'],
+                                       counts['motorbike'],
+                                       counts['aeroplane'],
+                                       counts['bus'],
+                                       counts['train'],
+                                       counts['truck'],
+                                       counts['boat'],
+                                       counts['traffic_light'],
+                                       counts['fire_hydrant'],
+                                       counts['stop_sign'],
+                                       counts['parking_meter'],
+                                       counts['bench'],
+                                       counts['bird'],
+                                       counts['cat'],
+                                       counts['dog'],
+                                       image_id)
 
-    query  = ''' UPDATE tasks
-              SET priority = %s ,
-                  begin_date = %s ,
-                  end_date = %s
-              WHERE id = %s'''+str(image_id)
-
-    image_re = cur.execute(query).fetchone()
+    cur.execute(query).fetchone()
 
 
 
@@ -260,6 +284,7 @@ if __name__ == '__main__':
         print(result)
         if result != False:
             counts[result] += 1
+
     update_database(id, counts)
     print('result is %s' % counts)
 
