@@ -91,10 +91,29 @@ def arg_parse():
     return parser.parse_args()
 
 
+#
+# query  = ''' UPDATE media_media
+#           SET finished = 1,
+#           person = %s,
+#           bicycle = %s,
+#           car = %s,
+#           motorbike = %s,
+#           aeroplane = %s,
+#           bus = %s
+#           WHERE image_id = %s'''% (1,
+#                                    2,
+#                                    3,
+#                                    4,
+#                                    5,
+#                                    6,21)
+#
+# cur.execute(query).fetchone()
+
+
 def update_database(image_id, counts):
     con = sqlite3.connect("/home/ubuntu/MovingObjectDetecting/Application/imitagram/db.sqlite3")
     cur = con.cursor()
-    query  = ''' UPDATE media_media
+    query = ''' UPDATE media_media
               SET finished = 1,
               person = %s,
               bicycle = %s,
@@ -113,27 +132,27 @@ def update_database(image_id, counts):
               bird = %s,
               cat = %s,
               dog = %s
-              WHERE image_id = %s'''% (counts['person'],
-                                       counts['bicycle'],
-                                       counts['car'],
-                                       counts['motorbike'],
-                                       counts['aeroplane'],
-                                       counts['bus'],
-                                       counts['train'],
-                                       counts['truck'],
-                                       counts['boat'],
-                                       counts['traffic light'],
-                                       counts['fire hydrant'],
-                                       counts['stop sign'],
-                                       counts['parking meter'],
-                                       counts['bench'],
-                                       counts['bird'],
-                                       counts['cat'],
-                                       counts['dog'],
-                                       image_id)
-
+              WHERE image_id = %s''' % (counts['person'],
+                                        counts['bicycle'],
+                                        counts['car'],
+                                        counts['motorbike'],
+                                        counts['aeroplane'],
+                                        counts['bus'],
+                                        counts['train'],
+                                        counts['truck'],
+                                        counts['boat'],
+                                        counts['traffic light'],
+                                        counts['fire hydrant'],
+                                        counts['stop sign'],
+                                        counts['parking meter'],
+                                        counts['bench'],
+                                        counts['bird'],
+                                        counts['cat'],
+                                        counts['dog'],
+                                        image_id)
+    print(query)
     cur.execute(query).fetchone()
-
+    print('update successfully')
 
 
 if __name__ == '__main__':
@@ -191,10 +210,10 @@ if __name__ == '__main__':
 
     while cap.isOpened():
         ret, frame = cap.read()
-        if frames==0:
+        if frames == 0:
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
             print(frame.shape)
-            out = cv2.VideoWriter(name.split('.')[0]+'_counted.avi', fourcc, 20, frame.shape[:2][::-1])
+            out = cv2.VideoWriter(name.split('.')[0] + '_counted.avi', fourcc, 20, frame.shape[:2][::-1])
             # out = cv2.VideoWriter('output.avi', fourcc, 5, (768, 576))
         if frames == 20:
             break
@@ -252,7 +271,6 @@ if __name__ == '__main__':
         tracker.predict()
         tracker.update(detections)
 
-
         for track in tracker.tracks:
             if track.track_id not in records:
                 records[track.track_id] = Recorder(track.track_id, track.label, frames)
@@ -285,5 +303,4 @@ if __name__ == '__main__':
             counts[result] += 1
 
     update_database(id, counts)
-    print('result is %s' % counts)
-
+    # print('result is %s' % counts)
