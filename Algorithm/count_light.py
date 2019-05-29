@@ -196,9 +196,8 @@ if __name__ == '__main__':
             print(frame.shape)
             out = cv2.VideoWriter(name.split('.')[0]+'_counted.avi', fourcc, 20, frame.shape[:2][::-1])
             # out = cv2.VideoWriter('output.avi', fourcc, 5, (768, 576))
-        # if frames<15:
-        #     frames+=1
-        #     continue
+        if frames == 20:
+            break
         if not ret:
             break
         img, orig_im, dim = prep_image(frame, inp_dim)
