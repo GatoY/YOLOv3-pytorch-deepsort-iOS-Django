@@ -76,6 +76,9 @@ def arg_parse():
     parser = argparse.ArgumentParser(description='YOLO v3 Video Detection Module')
 
     parser.add_argument("--video", dest='video', help="Video to run detection upon", default="video.avi", type=str)
+    parser.add_argument("--id", dest='id', help="Media Id ", type=int)
+    parser.add_argument("--name", dest='name', help="Media name", type=str)
+
     parser.add_argument("--dataset", dest="dataset", help="Dataset on which the network has been trained",
                         default="pascal")
     parser.add_argument("--confidence", dest="confidence", help="Object Confidence to filter predictions", default=0.6)
@@ -88,17 +91,32 @@ def arg_parse():
     return parser.parse_args()
 
 
-def database():
-    conn = sqlite3.connect("sqlite.db")  # 创建sqlite.db数据库
-    print("open database success")
-    query = """
-    );"""
-    conn.execute(query)
-    conn.close()
+def update_database(image_id, ):
+    def dict_factory(cursor, row):
+        d = {}
+        for idx, col in enumerate(cursor.description):
+            d[col[0]] = row[idx]
+        return d
+
+    con = sqlite3.connect("db.sqlite3")
+    con.row_factory = dict_factory
+    cur = con.cursor()
+
+    query  = ''' UPDATE tasks
+              SET priority = %s ,
+                  begin_date = %s ,
+                  end_date = %s
+              WHERE id = %s'''+str(image_id)
+
+    image_re = cur.execute(query).fetchone()
+
+
 
 if __name__ == '__main__':
     args = arg_parse()
 
+    id = args.id
+    name = args.name
     confidence = float(args.confidence)
     # TODO
     nms_thesh = float(args.nms_thresh)
@@ -122,7 +140,7 @@ if __name__ == '__main__':
     model.eval()
 
     # videofile = args.video
-    videofile = 'vtest.avi'
+    videofile = name
     cap = cv2.VideoCapture(videofile)
     assert cap.isOpened(), 'Cannot capture source'
 
@@ -152,7 +170,7 @@ if __name__ == '__main__':
         if frames==0:
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
             print(frame.shape)
-            out = cv2.VideoWriter(videofile.split('.')[0]+'_counted.avi', fourcc, 20, frame.shape[:2][::-1])
+            out = cv2.VideoWriter(name, fourcc, 20, frame.shape[:2][::-1])
             # out = cv2.VideoWriter('output.avi', fourcc, 5, (768, 576))
         # if frames<15:
         #     frames+=1
@@ -242,4 +260,6 @@ if __name__ == '__main__':
         print(result)
         if result != False:
             counts[result] += 1
+    update_database(id, counts)
     print('result is %s' % counts)
+

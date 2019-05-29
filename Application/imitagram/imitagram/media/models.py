@@ -15,27 +15,27 @@ class Media(models.Model):
     image = models.OneToOneField(Image, on_delete=models.CASCADE, null=True)
     location = models.ForeignKey(Location, on_delete=models.PROTECT, null=True)
 
-    finished = models.BooleanField(default=False) #TODO YU 加载状态
-    output = models.CharField(max_length=500, default="") #TODO Yu 处理后的video结果的名字
+    finished = models.BooleanField(default=False) #TODO YU
+    output = models.CharField(max_length=500, default="") #TODO
 
     
-    person = models.IntegerField(default=0) #TODO Yu 追踪总数
-    bicycle = models.IntegerField(default=0) #TODO Yu 追踪总数
-    car = models.IntegerField(default=0) #TODO Yu 追踪总数
-    motorbike = models.IntegerField(default=0) #TODO Yu 追踪总数
-    aeroplane = models.IntegerField(default=0) #TODO Yu 追踪总数
-    bus = models.IntegerField(default=0) #TODO Yu 追踪总数
-    train = models.IntegerField(default=0) #TODO Yu 追踪总数
-    truck = models.IntegerField(default=0) #TODO Yu 追踪总数
-    boat = models.IntegerField(default=0) #TODO Yu 追踪总数
-    traffic_light = models.IntegerField(default=0) #TODO Yu 追踪总数
-    fire_hydrant = models.IntegerField(default=0) #TODO Yu 追踪总数
-    stop_sign = models.IntegerField(default=0) #TODO Yu 追踪总数
-    parking_meter = models.IntegerField(default=0) #TODO Yu 追踪总数
-    bench = models.IntegerField(default=0) #TODO Yu 追踪总数
-    bird = models.IntegerField(default=0) #TODO Yu 追踪总数
-    cat = models.IntegerField(default=0) #TODO Yu 追踪总数
-    dog = models.IntegerField(default=0) #TODO Yu 追踪总数
+    person = models.IntegerField(default=0) #TODO
+    bicycle = models.IntegerField(default=0) #TODO
+    car = models.IntegerField(default=0) #TODO
+    motorbike = models.IntegerField(default=0) #TODO
+    aeroplane = models.IntegerField(default=0) #TODO
+    bus = models.IntegerField(default=0) #TODO
+    train = models.IntegerField(default=0) #TODO
+    truck = models.IntegerField(default=0) #TODO
+    boat = models.IntegerField(default=0) #TODO
+    traffic_light = models.IntegerField(default=0) #TODO
+    fire_hydrant = models.IntegerField(default=0) #TODO
+    stop_sign = models.IntegerField(default=0) #TODO
+    parking_meter = models.IntegerField(default=0) #TODO
+    bench = models.IntegerField(default=0) #TODO
+    bird = models.IntegerField(default=0) #TODO
+    cat = models.IntegerField(default=0) #TODO
+    dog = models.IntegerField(default=0) #TODO
 
 
     comments_count = models.IntegerField(default=0)

@@ -19,7 +19,9 @@ def upload(request):
     m.user = request.user
     
     m.save()
-    
+    id = m.media_id
+    dir_name = image.standard_resolution + request.data['file'].name
+
     # m.save() 需要操作vido的代码
 
     return Response(status=204)
