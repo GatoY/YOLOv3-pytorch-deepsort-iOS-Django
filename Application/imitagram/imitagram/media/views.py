@@ -4,9 +4,10 @@ from rest_framework.decorators import api_view, permission_classes, parser_class
 from rest_framework.parsers import JSONParser, MultiPartParser
 # from django.core.files.storage import FileSystemStorage
 from imitagram.users.serializers import UserSerializer
-from imitagram.locations.models import Location
-from .models import Image, Media, Comment, Like # 需要引入 做修改
+# from imitagram.locations.models import Location
+from .models import Image, Media, Comment, Like
 from .serializers import CommentSerializer
+import subprocess
 
 
 @api_view(['POST'])
@@ -21,9 +22,9 @@ def upload(request):
     m.save()
     id = m.media_id
     dir_name = image.standard_resolution + request.data['file'].name
-
-    # m.save() 需要操作vido的代码
-
+    count_script='/home/ubuntu/MovingObjectDetecting/Algorithm/count_light.py'
+    sys_cmd = ['python', count_script, '--id ',str(id), ' --name ', dir_name]
+    subprocess.Popen(sys_cmd)
     return Response(status=204)
 
 
