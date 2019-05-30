@@ -8,7 +8,7 @@ from imitagram.users.serializers import UserSerializer
 from .models import Image, Media, Comment, Like
 from .serializers import CommentSerializer
 import subprocess
-
+import datetime
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
@@ -21,7 +21,12 @@ def upload(request):
     
     m.save()
     id = m.id
-    dir_name = image.standard_resolution + request.data['file'].name
+    date_time = datetime.date.today().split('-')
+    year = date_time[0]
+    month = date_time[1]
+    day = date_time[2]
+    path = 'media/'+year+'/'+month+'/'+day+'/'
+    dir_name = path + request.data['file'].name
     count_script='/home/ubuntu/MovingObjectDetecting/Algorithm/count_light.py'
     sys_cmd = ['python', count_script, '--id ',str(id), ' --name ', dir_name]
     subprocess.Popen(sys_cmd)
