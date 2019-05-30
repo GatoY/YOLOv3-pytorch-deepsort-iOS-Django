@@ -20,7 +20,7 @@ def upload(request):
     m.user = request.user
     
     m.save()
-    id = m.media_id
+    id = m.id
     dir_name = image.standard_resolution + request.data['file'].name
     count_script='/home/ubuntu/MovingObjectDetecting/Algorithm/count_light.py'
     sys_cmd = ['python', count_script, '--id ',str(id), ' --name ', dir_name]
