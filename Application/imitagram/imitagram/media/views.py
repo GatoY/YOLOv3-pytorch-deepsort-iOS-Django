@@ -21,7 +21,7 @@ def upload(request):
     
     m.save()
     id = m.id
-    date_time = datetime.date.today().split('-')
+    date_time = str(datetime.date.today()).split('-')
     year = date_time[0]
     month = date_time[1]
     day = date_time[2]
