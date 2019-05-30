@@ -12,6 +12,7 @@ import pickle as pkl
 import argparse
 from recorder import Recorder
 import sqlite3
+import datetime
 
 from deep_sort import preprocessing
 from deep_sort import nn_matching
@@ -136,7 +137,7 @@ def update_database(image_id, counts):
     print('update successfully')
 
 
-if __name__ == '__main__':
+def main():
     args = arg_parse()
 
     image_id = args.id
@@ -285,3 +286,11 @@ if __name__ == '__main__':
 
     update_database(image_id, counts)
     # print('result is %s' % counts)
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except:
+        with open('exception.txt', 'a') as f:
+            f.write(str(datetime.datetime.now()))
