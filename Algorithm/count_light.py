@@ -195,7 +195,7 @@ def main():
         if frames == 0:
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
             print(frame.shape)
-            out = cv2.VideoWriter(name.split('.')[0] + '_counted.avi', fourcc, 20, frame.shape[:2][::-1])
+            out = cv2.VideoWriter(name.split('.')[0] + '_counted.mp4', fourcc, 20, frame.shape[:2][::-1])
             # out = cv2.VideoWriter('output.avi', fourcc, 5, (768, 576))
         if frames == 20:
             break
@@ -291,6 +291,7 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except:
+    except Exception as e:
         with open('exception.txt', 'a') as f:
             f.write(str(datetime.datetime.now()))
+            f.write(e)
