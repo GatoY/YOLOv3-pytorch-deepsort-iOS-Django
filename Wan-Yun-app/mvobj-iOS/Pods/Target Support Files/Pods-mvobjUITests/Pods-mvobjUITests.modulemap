@@ -1,0 +1,6 @@
+framework module Pods_mvobjUITests {
+  umbrella header "Pods-mvobjUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
