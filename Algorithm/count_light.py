@@ -289,6 +289,8 @@ def main():
 
 
 if __name__ == '__main__':
+    with open('a.txt', 'w') as f:
+        f.write('run')
     try:
         main()
     except Exception as e:
