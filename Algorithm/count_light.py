@@ -292,6 +292,6 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        with open('exception.txt', 'w') as f:
+        with open('exception.txt', 'w+') as f:
             f.write(str(datetime.datetime.now()))
             f.write(e)
