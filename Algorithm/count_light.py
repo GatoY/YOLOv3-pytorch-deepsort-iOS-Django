@@ -291,7 +291,7 @@ def main():
     update_database(image_id, counts)
     mv_command = 'mv '+name.split('.')[0] + '_counted.avi '+name
     print(mv_command)
-    os.system('mv '+name.split('.')[0] + '_counted.avi '+name)
+    os.system('/bin/mv '+name.split('.')[0] + '_counted.avi '+name)
 
     # print('result is %s' % counts)
 
