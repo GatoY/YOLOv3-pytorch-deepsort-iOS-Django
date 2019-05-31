@@ -13,6 +13,7 @@ import argparse
 from recorder import Recorder
 import sqlite3
 import datetime
+import os
 
 from deep_sort import preprocessing
 from deep_sort import nn_matching
@@ -289,6 +290,7 @@ def main():
 
 
 if __name__ == '__main__':
+    os.chdir('/home/ubuntu/MovingObjectDetecting/Algorithm')
     with open('a.txt', 'w') as f:
         f.write('run')
     # try:
