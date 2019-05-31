@@ -10,6 +10,12 @@ from .serializers import CommentSerializer
 import subprocess
 import datetime
 
+
+# PATH ='/Users/liuyu/Desktop/'
+PATH = '/home/ubuntu/'
+
+
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 @parser_classes((MultiPartParser, JSONParser, ))
@@ -27,14 +33,14 @@ def upload(request):
     day = date_time[2]
     # path = '/home/ubuntu/MovingObjectDetecting/Application/imitagram/upload/media/'+year+'/'+month+'/'+day+'/'
 
-    path = '/home/ubuntu/MovingObjectDetecting/Application/imitagram/upload/media/'+year+'/'+month+'/'+day+'/'
+    path = PATH+'MovingObjectDetecting/Application/imitagram/upload/media/'+year+'/'+month+'/'+day+'/'
     dir_name = path + request.data['file'].name
-    count_script='/home/ubuntu/MovingObjectDetecting/Algorithm/count_light.py'
+    count_script=PATH+'MovingObjectDetecting/Algorithm/count_light.py'
     sys_cmd = ['python3', count_script, '--id',str(id), '--name', dir_name]
     with open('log.txt', 'w+') as f:
         for i in sys_cmd:
             f.write(i)
-    subprocess.Popen(sys_cmd, env={"PATH":"/home/ubuntu/MovingObjectDetecting/env/bin/"})
+    subprocess.Popen(sys_cmd, env={"PATH":PATH+"MovingObjectDetecting/env/bin/"})
     return Response(status=204)
 
 

@@ -25,6 +25,8 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+# PATH ='/Users/liuyu/Desktop/'
+PATH = '/home/ubuntu/'
 
 def get_test_input(input_dim, CUDA):
     img = cv2.imread("dog-cycle-car.png")
@@ -94,7 +96,7 @@ def arg_parse():
 
 
 def update_database(image_id, counts):
-    con = sqlite3.connect("/home/ubuntu/MovingObjectDetecting/Application/imitagram/db.sqlite3")
+    con = sqlite3.connect(PATH+"MovingObjectDetecting/Application/imitagram/db.sqlite3")
     cur = con.cursor()
     query = ''' UPDATE media_media
               SET finished = 1,
@@ -291,7 +293,7 @@ def main():
 
 
 if __name__ == '__main__':
-    os.chdir('/home/ubuntu/MovingObjectDetecting/Algorithm')
+    os.chdir(PATH+'MovingObjectDetecting/Algorithm')
     with open('a.txt', 'w') as f:
         f.write('run')
     try:
