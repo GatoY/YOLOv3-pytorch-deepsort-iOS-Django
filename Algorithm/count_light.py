@@ -291,9 +291,9 @@ def main():
 if __name__ == '__main__':
     with open('a.txt', 'w') as f:
         f.write('run')
-    try:
-        main()
-    except Exception as e:
-        with open('exception.txt', 'w+') as f:
-            f.write(str(datetime.datetime.now()))
-            f.write(e)
+    # try:
+    main()
+    # except Exception as e:
+    #     with open('exception.txt', 'w+') as f:
+    #         f.write(str(datetime.datetime.now()))
+    #         f.write(e)
