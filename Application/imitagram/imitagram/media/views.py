@@ -34,7 +34,7 @@ def upload(request):
     with open('log.txt', 'w+') as f:
         for i in sys_cmd:
             f.write(i)
-    subprocess.Popen(sys_cmd, env={"PATH":"/Users/liuyu/Desktop/MovingObjectDetecting/env/bin/"})
+    subprocess.Popen(sys_cmd, env={"PATH":"/home/ubuntu/Desktop/MovingObjectDetecting/env/bin/"})
     return Response(status=204)
 
 
