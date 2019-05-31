@@ -31,7 +31,7 @@ def upload(request):
     sys_cmd = ['python', count_script, '--id ',str(id), ' --name ', dir_name]
     # with open('log.txt', 'w') as f:
     #     f.write(sys_cmd)
-    subprocess.Popen(sys_cmd, cwd='/home/ubuntu/MovingObjectDetecting/Algorithm')
+    subprocess.Popen(sys_cmd)
     return Response(status=204)
 
 

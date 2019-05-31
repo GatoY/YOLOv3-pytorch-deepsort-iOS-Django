@@ -167,6 +167,7 @@ def main():
 
     # videofile = args.video
     videofile = name
+    print(videofile)
     cap = cv2.VideoCapture(videofile)
     assert cap.isOpened(), 'Cannot capture source'
 
