@@ -294,10 +294,10 @@ if __name__ == '__main__':
     os.chdir('/home/ubuntu/MovingObjectDetecting/Algorithm')
     with open('a.txt', 'w') as f:
         f.write('run')
-    # try:
-    main()
+    try:
+        main()
     # os.system('mv '+name.split('.')[0] + '_counted.mp4 '+name)
-    # except Exception as e:
-    #     with open('exception.txt', 'w+') as f:
-    #         f.write(str(datetime.datetime.now()))
-    #         f.write(e)
+    except Exception as e:
+        with open('exception.txt', 'w+') as f:
+            f.write(str(datetime.datetime.now()))
+            f.write(str(e))
