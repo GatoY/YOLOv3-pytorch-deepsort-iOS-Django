@@ -30,11 +30,11 @@ def upload(request):
     path = '/home/ubuntu/MovingObjectDetecting/Application/imitagram/upload/media/'+year+'/'+month+'/'+day+'/'
     dir_name = path + request.data['file'].name
     count_script='/home/ubuntu/MovingObjectDetecting/Algorithm/count_light.py'
-    sys_cmd = ['python', count_script, '--id',str(id), '--name', dir_name]
+    sys_cmd = ['python3', count_script, '--id',str(id), '--name', dir_name]
     with open('log.txt', 'w+') as f:
         for i in sys_cmd:
             f.write(i)
-    subprocess.Popen(sys_cmd, env={"PATH":"/home/ubuntu/Desktop/MovingObjectDetecting/env/bin/"})
+    subprocess.Popen(sys_cmd, env={"PATH":"/home/ubuntu/MovingObjectDetecting/env/bin/"})
     return Response(status=204)
 
 
