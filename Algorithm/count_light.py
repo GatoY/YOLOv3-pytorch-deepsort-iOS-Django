@@ -142,94 +142,80 @@ def update_database(image_id, counts):
 
 def main():
     args = arg_parse()
-
     image_id = args.id
-    name = args.name
+    videofile = args.name
     confidence = float(args.confidence)
-    # TODO
     nms_thesh = float(args.nms_thresh)
-    start = 0
-    num_classes = 17
-    CUDA = torch.cuda.is_available()
+    num_classes = 17 # we only focus on 17 objects
 
+    # model loaded
+    ##########################
+    CUDA = torch.cuda.is_available()
     print("Loading network.....")
     model = Darknet(args.cfgfile)
     model.load_weights(args.weightsfile)
     print("Network successfully loaded")
-
     model.net_info["height"] = args.reso
     inp_dim = int(model.net_info["height"])
     assert inp_dim % 32 == 0
     assert inp_dim > 32
-
     if CUDA:
         model.cuda()
     model(get_test_input(inp_dim, CUDA), CUDA)
     model.eval()
-
-    # videofile = args.video
-    videofile = name
-    print(videofile)
-    cap = cv2.VideoCapture(videofile)
-    assert cap.isOpened(), 'Cannot capture source'
-
-    frames = 0
-    start = time.time()
-    print('while')
-
     classes = load_classes('data/coco.names')
-    colors = pkl.load(open("pallete", "rb"))
+    ##########################
 
-    #############
+    # deep sort loaded
+    ##########################
     model_filename = 'data/mars-small128.pb'
     encoder = gdet.create_box_encoder(model_filename, batch_size=1)
-
     max_cosine_distance = 0.3
     nn_budget = None
     nms_max_overlap = 1.0
-
     metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
     tracker = Tracker(metric)
+    ##########################
 
-    ###############
+
+    cap = cv2.VideoCapture(videofile) # open videofile
+    assert cap.isOpened(), 'Cannot capture source'
+    frames = 0
     records = {}
-
+    start = time.time()
     while cap.isOpened():
         ret, frame = cap.read()
+        if not ret:
+            break
+
+        # initialize new video file
         if frames == 0:
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
             print(frame.shape)
-            out = cv2.VideoWriter(name.split('.')[0] + '_counted.avi', fourcc, 20, frame.shape[:2][::-1])
-            # out = cv2.VideoWriter('output.avi', fourcc, 5, (768, 576))
-        if frames == 20:
-            break
-        if not ret:
-            break
+            out = cv2.VideoWriter(videofile.split('.')[0] + '_counted.avi', fourcc, 20, frame.shape[:2][::-1])
+
+
+        # get detections from YOLOv3
+        ####################################################
         img, orig_im, dim = prep_image(frame, inp_dim)
         im_dim = torch.FloatTensor(dim).repeat(1, 2)
-
         if CUDA:
             im_dim = im_dim.cuda()
             img = img.cuda()
-
         with torch.no_grad():
             output = model(Variable(img), CUDA)
         output = write_results(output, confidence, num_classes, nms=True, nms_conf=nms_thesh)
         if type(output) == int:
             frames += 1
             continue
-
         im_dim = im_dim.repeat(output.size(0), 1)
         scaling_factor = torch.min(inp_dim / im_dim, 1)[0].view(-1, 1)
-
         output[:, [1, 3]] -= (inp_dim - scaling_factor * im_dim[:, 0].view(-1, 1)) / 2
         output[:, [2, 4]] -= (inp_dim - scaling_factor * im_dim[:, 1].view(-1, 1)) / 2
         output[:, 1:5] /= scaling_factor
-
         for i in range(output.shape[0]):
             output[i, [1, 3]] = torch.clamp(output[i, [1, 3]], 0.0, im_dim[i, 0])
             output[i, [2, 4]] = torch.clamp(output[i, [2, 4]], 0.0, im_dim[i, 1])
-
         detection_boxes = output.numpy()[:, (1, 2, 3, 4, -1)]
         # filter 17
         boxes = []
@@ -240,9 +226,12 @@ def main():
                     boxes.append(box[0:4])
                     labels.append(classes[int(box[-1])])
             except:
-                print((box[-1]))
+                # print((box[-1]))
+                pass
+        ####################################################
 
-        # TODO
+        # Tracking
+        ####################################################
         features = encoder(orig_im, boxes)
         # score to 1.0 here).
         detections = [Detection(bbox, 1.0, feature, label) for bbox, feature, label in zip(boxes, features, labels)]
@@ -262,9 +251,9 @@ def main():
                 records[track.track_id] = Recorder(track.track_id, track.label, frames)
             else:
                 records[track.track_id].update(frames)
-            # counts[track.label] += 1
-            # if track.is_confirmed() and track.time_since_update > 1:
-            #     continue
+            counts[track.label] += 1
+            if track.is_confirmed() and track.time_since_update > 1:
+                continue
             bbox = track.to_tlbr()
             # cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
 
@@ -273,10 +262,12 @@ def main():
         for det, lab in zip(detections, labels):
             bbox = det.to_tlbr()
             cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
+        ####################################################
 
         out.write(frame)
         frames += 1
         print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
+
     cap.release()
     out.release()
     counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
@@ -289,9 +280,9 @@ def main():
             counts[result] += 1
 
     update_database(image_id, counts)
-    mv_command = 'mv '+name.split('.')[0] + '_counted.avi '+name
+    mv_command = 'mv '+videofile.split('.')[0] + '_counted.avi '+videofile
     print(mv_command)
-    os.system('/bin/mv '+name.split('.')[0] + '_counted.avi '+name)
+    os.system('/bin/mv '+videofile.split('.')[0] + '_counted.avi '+videofile)
 
     # print('result is %s' % counts)
 
