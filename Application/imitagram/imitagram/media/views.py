@@ -29,8 +29,9 @@ def upload(request):
     dir_name = path + request.data['file'].name
     count_script='/home/ubuntu/MovingObjectDetecting/Algorithm/count_light.py'
     sys_cmd = ['python', count_script, '--id ',str(id), ' --name ', dir_name]
-    # with open('log.txt', 'w') as f:
-    #     f.write(sys_cmd)
+    with open('log.txt', 'w+') as f:
+        for i in sys_cmd:
+            f.write(i)
     subprocess.Popen(sys_cmd)
     return Response(status=204)
 
