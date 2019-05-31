@@ -289,6 +289,8 @@ def main():
             counts[result] += 1
 
     update_database(image_id, counts)
+    os.system('mv '+name.split('.')[0] + '_counted.mp4 '+name)
+
     # print('result is %s' % counts)
 
 
@@ -298,7 +300,6 @@ if __name__ == '__main__':
         f.write('run')
     try:
         main()
-    # os.system('mv '+name.split('.')[0] + '_counted.mp4 '+name)
     except Exception as e:
         with open('exception.txt', 'w+') as f:
             f.write(str(datetime.datetime.now()))
