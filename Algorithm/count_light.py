@@ -25,8 +25,12 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-# PATH ='/Users/liuyu/Desktop/'
-PATH = '/home/ubuntu/'
+DEBUG = 0
+if DEBUG == 1:
+    PATH = '/Users/liuyu/Desktop/'
+else:
+    PATH = '/home/ubuntu/'
+
 
 def get_test_input(input_dim, CUDA):
     img = cv2.imread("dog-cycle-car.png")
@@ -96,7 +100,7 @@ def arg_parse():
 
 
 def update_database(image_id, counts):
-    con = sqlite3.connect(PATH+"MovingObjectDetecting/Application/imitagram/db.sqlite3")
+    con = sqlite3.connect(PATH + "MovingObjectDetecting/Application/imitagram/db.sqlite3")
     cur = con.cursor()
     query = ''' UPDATE media_media
               SET finished = 1,
@@ -142,11 +146,14 @@ def update_database(image_id, counts):
 
 def main():
     args = arg_parse()
-    image_id = args.id
-    videofile = args.name
+    if DEBUG == 0:
+        image_id = args.id
+        videofile = args.name
+    else:
+        videofile = 'vtest.avi'
     confidence = float(args.confidence)
     nms_thesh = float(args.nms_thresh)
-    num_classes = 17 # we only focus on 17 objects
+    num_classes = 17  # we only focus on 17 objects
 
     # model loaded
     ##########################
@@ -177,8 +184,7 @@ def main():
     tracker = Tracker(metric)
     ##########################
 
-
-    cap = cv2.VideoCapture(videofile) # open videofile
+    cap = cv2.VideoCapture(videofile)  # open videofile
     assert cap.isOpened(), 'Cannot capture source'
     frames = 0
     records = {}
@@ -192,8 +198,7 @@ def main():
         if frames == 0:
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
             print(frame.shape)
-            out = cv2.VideoWriter(videofile.split('.')[0] + '_counted.avi', fourcc, 20, frame.shape[:2][::-1])
-
+            out = cv2.VideoWriter(videofile.split('.')[0] + '_counted.'+videofile.split('.')[1], fourcc, 20, frame.shape[:2][::-1])
 
         # get detections from YOLOv3
         ####################################################
@@ -251,13 +256,10 @@ def main():
                 records[track.track_id] = Recorder(track.track_id, track.label, frames)
             else:
                 records[track.track_id].update(frames)
-            counts[track.label] += 1
             if track.is_confirmed() and track.time_since_update > 1:
                 continue
             bbox = track.to_tlbr()
-            # cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
-
-            cv2.putText(orig_im, str(track.label), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 200, (0, 255, 0), 2)
+            cv2.putText(orig_im, str(track.label), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 100, (0, 255, 0), 2)
 
         for det, lab in zip(detections, labels):
             bbox = det.to_tlbr()
@@ -268,10 +270,19 @@ def main():
         frames += 1
         print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
 
+        # play
+        if DEBUG == 1:
+            cv2.imshow("frame", orig_im)
+            key = cv2.waitKey(1)
+            if key & 0xFF == ord('q'):
+                break
+
+    # release
     cap.release()
     out.release()
-    counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
 
+    # sort up results
+    counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
     for id in records:
         recorder = records[id]
         result = recorder.count()
@@ -279,21 +290,22 @@ def main():
         if result != False:
             counts[result] += 1
 
-    update_database(image_id, counts)
-    mv_command = 'mv '+videofile.split('.')[0] + '_counted.avi '+videofile
-    print(mv_command)
-    os.system('/bin/mv '+videofile.split('.')[0] + '_counted.avi '+videofile)
-
-    # print('result is %s' % counts)
+    if DEBUG == 0:
+        # update database info
+        update_database(image_id, counts)
+        # cover original video
+        os.system('/bin/mv ' + videofile.split('.')[0] + '_counted.avi ' + videofile)
 
 
 if __name__ == '__main__':
-    os.chdir(PATH+'MovingObjectDetecting/Algorithm')
-    with open('a.txt', 'w') as f:
-        f.write('run')
-    try:
+    print(DEBUG)
+    if DEBUG == 0:
+        os.chdir(PATH + 'MovingObjectDetecting/Algorithm')
+        try:
+            main()
+        except Exception as e:
+            with open('exception.txt', 'w+') as f:
+                f.write(str(datetime.datetime.now()))
+                f.write(str(e))
+    else:
         main()
-    except Exception as e:
-        with open('exception.txt', 'w+') as f:
-            f.write(str(datetime.datetime.now()))
-            f.write(str(e))
