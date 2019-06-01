@@ -25,7 +25,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-DEBUG = 0
+DEBUG = 1
 if DEBUG == 1:
     PATH = '/Users/liuyu/Desktop/'
 else:
@@ -89,8 +89,8 @@ def arg_parse():
 
     parser.add_argument("--dataset", dest="dataset", help="Dataset on which the network has been trained",
                         default="pascal")
-    parser.add_argument("--confidence", dest="confidence", help="Object Confidence to filter predictions", default=0.6)
-    parser.add_argument("--nms_thresh", dest="nms_thresh", help="NMS Threshhold", default=0.4)
+    parser.add_argument("--confidence", dest="confidence", help="Object Confidence to filter predictions", default=0.7)
+    parser.add_argument("--nms_thresh", dest="nms_thresh", help="NMS Threshhold", default=0.5)
     parser.add_argument("--cfg", dest='cfgfile', help="Config file", default="cfg/yolov3.cfg", type=str)
     parser.add_argument("--weights", dest='weightsfile', help="weightsfile", default="yolov3.weights", type=str)
     parser.add_argument("--reso", dest='reso', help=
@@ -121,24 +121,25 @@ def update_database(image_id, counts):
               bird = %s,
               cat = %s,
               dog = %s
-              WHERE image_id = %s''' % (counts['person'],
-                                        counts['bicycle'],
-                                        counts['car'],
-                                        counts['motorbike'],
-                                        counts['aeroplane'],
-                                        counts['bus'],
-                                        counts['train'],
-                                        counts['truck'],
-                                        counts['boat'],
-                                        counts['traffic light'],
-                                        counts['fire hydrant'],
-                                        counts['stop sign'],
-                                        counts['parking meter'],
-                                        counts['bench'],
-                                        counts['bird'],
-                                        counts['cat'],
-                                        counts['dog'],
+              WHERE image_id = %s''' % (counts['person'][0],
+                                        counts['bicycle'][0],
+                                        counts['car'][0],
+                                        counts['motorbike'][0],
+                                        counts['aeroplane'][0],
+                                        counts['bus'][0],
+                                        counts['train'][0],
+                                        counts['truck'][0],
+                                        counts['boat'][0],
+                                        counts['traffic light'][0],
+                                        counts['fire hydrant'][0],
+                                        counts['stop sign'][0],
+                                        counts['parking meter'][0],
+                                        counts['bench'][0],
+                                        counts['bird'][0],
+                                        counts['cat'][0],
+                                        counts['dog'][0],
                                         image_id)
+    print()
     print(query)
     cur.execute(query).fetchone()
     print('update successfully')
@@ -189,16 +190,15 @@ def main():
     frames = 0
     records = {}
     start = time.time()
+    draw = {}
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
-
-        # initialize new video file
-        if frames == 0:
-            fourcc = cv2.VideoWriter_fourcc(*'XVID')
-            print(frame.shape)
-            out = cv2.VideoWriter(videofile.split('.')[0] + '_counted.'+videofile.split('.')[1], fourcc, 20, frame.shape[:2][::-1])
+        #
+        # if frames>20:
+        #     break
+        draw[frames] = {'rec':[], 'label':[]}
 
         # get detections from YOLOv3
         ####################################################
@@ -259,36 +259,42 @@ def main():
             if track.is_confirmed() and track.time_since_update > 1:
                 continue
             bbox = track.to_tlbr()
-            cv2.putText(orig_im, str(track.label), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 100, (0, 255, 0), 2)
+            draw[frames]['label'].append([track.track_id, track.label, (int(bbox[0]), int(bbox[1]))])
+            # cv2.putText(orig_im, str(track.label), (int(bbox[0]), int(bbox[1])), 0, 5e-3 * 100, (0, 255, 0), 2)
 
         for det, lab in zip(detections, labels):
             bbox = det.to_tlbr()
-            cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
+            draw[frames]['rec'].append([(int(bbox[0]), int(bbox[1])),(int(bbox[2]), int(bbox[3]))])
+            # cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
         ####################################################
 
-        out.write(frame)
         frames += 1
         print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
 
-        # play
-        if DEBUG == 1:
-            cv2.imshow("frame", orig_im)
-            key = cv2.waitKey(1)
-            if key & 0xFF == ord('q'):
-                break
+        #TODO play
+        # if DEBUG == 1:
+        #     cv2.imshow("frame", orig_im)
+        #     key = cv2.waitKey(1)
+        #     if key & 0xFF == ord('q'):
+        #         break
 
     # release
     cap.release()
-    out.release()
 
     # sort up results
-    counts = {i: j for (i, j) in zip(classes, [0] * len(classes))}
+    counts = {i: [j,[]] for (i, j) in zip(classes, [0] * len(classes))}
     for id in records:
         recorder = records[id]
         result = recorder.count()
-        print(result)
         if result != False:
-            counts[result] += 1
+            counts[result][0] += 1
+            counts[result][1].append(id)
+
+
+    # id_sort = {i:j for (i,j) in zip(classes, [0]*len(classes))}
+    print(counts)
+    print('gen new video')
+    gen_new_video(counts, draw,videofile)
 
     if DEBUG == 0:
         # update database info
@@ -296,6 +302,53 @@ def main():
         # cover original video
         os.system('/bin/mv ' + videofile.split('.')[0] + '_counted.avi ' + videofile)
 
+
+
+def gen_new_video(counts, draw, videofile):
+    cap = cv2.VideoCapture(videofile)  # open videofile
+    frames = 0
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        # initialize new video file
+        if frames == 0:
+            fourcc = cv2.VideoWriter_fourcc(*'XVID')
+            out = cv2.VideoWriter(videofile.split('.')[0] + '_counted.' + videofile.split('.')[1], fourcc, 20,
+                                  frame.shape[:2][::-1])
+        draw_this_frame = draw[frames]
+        for rec in draw_this_frame['rec']:
+            # print(rec)
+            cv2.rectangle(frame, rec[0], rec[1], (255, 0, 0), 2)
+
+        for label_list in draw_this_frame['label']:
+
+            track_id, label, pos =label_list
+            id_list = counts[label][1]
+            # print(label)
+            # print(track_id)
+            # print(id_list)
+            # print(type(track_id))
+            # print(type(id_list[0]))
+            if track_id not in id_list:
+                continue
+            else:
+                cv2.putText(frame, str(label)+str(id_list.index(track_id)+1), pos, 0, 5e-3 * 100, (0, 255, 0), 2)
+
+
+        # play
+        # if DEBUG == 1:
+        #     cv2.imshow("frame", frame)
+        #     key = cv2.waitKey(0)
+        #     if key & 0xFF == ord('q'):
+        #         break
+        out.write(frame)
+        frames+=1
+
+    cap.release()
+    out.release()
 
 if __name__ == '__main__':
     print(DEBUG)
