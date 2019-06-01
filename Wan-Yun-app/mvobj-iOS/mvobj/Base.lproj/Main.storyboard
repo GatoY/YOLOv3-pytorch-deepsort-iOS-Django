@@ -59,6 +59,7 @@
                                 <state key="normal" title="forgot password?"/>
                                 <connections>
                                     <action selector="forgotPassword_click:" destination="BYZ-38-t0r" eventType="touchUpInside" id="H9f-rk-gZt"/>
+                                    <segue destination="j7d-A7-cJ8" kind="presentation" id="6qq-Al-WE3"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0nT-PL-F3s">
@@ -200,13 +201,62 @@
                     <view key="view" contentMode="scaleToFill" id="ETx-gm-X3D">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="email" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="MlD-Al-jmR" userLabel="Email Txt">
+                                <rect key="frame" x="42" y="195" width="330" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="330" id="1fc-G7-Mj3"/>
+                                    <constraint firstAttribute="height" constant="30" id="dfo-K0-Vyx"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UIc-Ua-UsB">
+                                <rect key="frame" x="282" y="255" width="90" height="45"/>
+                                <color key="backgroundColor" red="0.0" green="0.58980089430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="90" id="Qjb-6O-Vyg"/>
+                                    <constraint firstAttribute="height" constant="45" id="jUR-4p-qGE"/>
+                                </constraints>
+                                <state key="normal" title="Reset">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="ResetBtnClicked:" destination="j7d-A7-cJ8" eventType="touchUpInside" id="DIF-QI-TUz"/>
+                                    <action selector="loginBtn_click:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gQ6-Qs-mQ8"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vim-ti-8H9">
+                                <rect key="frame" x="226" y="270" width="48" height="30"/>
+                                <state key="normal" title="Cancel"/>
+                                <connections>
+                                    <action selector="CancelBtnClicked:" destination="j7d-A7-cJ8" eventType="touchUpInside" id="iJr-A9-u0N"/>
+                                    <action selector="cancelBtnClick:" destination="kae-ae-546" eventType="touchUpInside" id="Suv-jO-U9Y"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="MlD-Al-jmR" firstAttribute="top" secondItem="tev-g1-TXg" secondAttribute="top" constant="151" id="HGl-5u-xAg"/>
+                            <constraint firstItem="vim-ti-8H9" firstAttribute="bottom" secondItem="UIc-Ua-UsB" secondAttribute="bottom" id="OrH-Xl-fcy"/>
+                            <constraint firstItem="UIc-Ua-UsB" firstAttribute="trailing" secondItem="MlD-Al-jmR" secondAttribute="trailing" id="TQa-Nu-AjD"/>
+                            <constraint firstItem="MlD-Al-jmR" firstAttribute="centerX" secondItem="ETx-gm-X3D" secondAttribute="centerX" id="aSz-k4-pDH"/>
+                            <constraint firstItem="UIc-Ua-UsB" firstAttribute="top" secondItem="MlD-Al-jmR" secondAttribute="bottom" constant="30" id="aVK-bM-QxH"/>
+                            <constraint firstItem="UIc-Ua-UsB" firstAttribute="leading" secondItem="vim-ti-8H9" secondAttribute="trailing" constant="8" symbolic="YES" id="blY-QX-dYr"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="tev-g1-TXg"/>
                     </view>
+                    <connections>
+                        <outlet property="CancelBtn" destination="vim-ti-8H9" id="7FP-f5-Cy6"/>
+                        <outlet property="ResetBtn" destination="UIc-Ua-UsB" id="Qcy-WL-6rs"/>
+                        <outlet property="emailTxt" destination="MlD-Al-jmR" id="wZM-Z1-L1N"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="v39-GD-gg5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1628.985507246377" y="126.5625"/>
+            <point key="canvasLocation" x="909" y="861"/>
         </scene>
         <!--Item 2-->
         <scene sceneID="Cti-zl-XHn">
