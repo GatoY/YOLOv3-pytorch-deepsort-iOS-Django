@@ -196,8 +196,8 @@ def main():
         if not ret:
             break
         #
-        # if frames>20:
-        #     break
+        if frames ==20:
+            break
         draw[frames] = {'rec': [], 'label': []}
 
         # get detections from YOLOv3
