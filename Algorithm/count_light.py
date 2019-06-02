@@ -300,8 +300,9 @@ def main():
         # update database info
         update_database(image_id, counts)
         # cover original video
-        os.system('/bin/mv ' + videofile.split('.')[0] + '_counted.'+ videofile.split('.')[1] + videofile)
-
+        mv_command = '/bin/mv ' + videofile.split('.')[0] + '_counted.'+ videofile.split('.')[1] + videofile
+        os.system(mv_command)
+        print(mv_command)
 
 def gen_new_video(counts, draw, videofile):
     cap = cv2.VideoCapture(videofile)  # open videofile
