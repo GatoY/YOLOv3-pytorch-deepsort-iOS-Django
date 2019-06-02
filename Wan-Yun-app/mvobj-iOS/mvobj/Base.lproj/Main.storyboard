@@ -284,7 +284,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="56Q-qK-tU4"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Profile" id="5ZR-no-iLQ"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="profileicon.png" id="5ZR-no-iLQ"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="spD-IY-xZE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -293,18 +293,60 @@
         <!--Video-->
         <scene sceneID="ZzD-8s-wCu">
             <objects>
-                <viewController title="Video" id="eTk-oo-ts2" sceneMemberID="viewController">
+                <viewController title="Video" id="eTk-oo-ts2" customClass="videoVC" customModule="mvobj" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="wqn-lN-ycc">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oOK-Sa-2Xt">
+                                <rect key="frame" x="131" y="297" width="152" height="45"/>
+                                <color key="backgroundColor" red="1" green="0.83234566450000003" blue="0.47320586440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="90" id="ckk-BD-CFT"/>
+                                    <constraint firstAttribute="height" constant="45" id="hAN-VV-VjZ"/>
+                                </constraints>
+                                <state key="normal" title="Choose From Library">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="chooseBtnClicked:" destination="eTk-oo-ts2" eventType="touchUpInside" id="dvG-1H-3XH"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uRA-a4-pcD">
+                                <rect key="frame" x="131" y="231" width="152" height="45"/>
+                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="C4g-d3-hsQ"/>
+                                    <constraint firstAttribute="width" constant="90" id="Rzy-4s-UzE"/>
+                                </constraints>
+                                <state key="normal" title="Record Video">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="recordBtnClicked:" destination="eTk-oo-ts2" eventType="touchUpInside" id="l9f-ST-t9N"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="uRA-a4-pcD" firstAttribute="leading" secondItem="oOK-Sa-2Xt" secondAttribute="leading" id="2b1-5v-ZsW"/>
+                            <constraint firstItem="oOK-Sa-2Xt" firstAttribute="top" secondItem="uRA-a4-pcD" secondAttribute="bottom" constant="22" id="Gv5-dn-H4g"/>
+                            <constraint firstItem="uRA-a4-pcD" firstAttribute="top" secondItem="J4C-lQ-RDp" secondAttribute="top" constant="186" id="P7J-QB-sHA"/>
+                            <constraint firstItem="uRA-a4-pcD" firstAttribute="centerX" secondItem="wqn-lN-ycc" secondAttribute="centerX" id="gCN-si-Y5W"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="J4C-lQ-RDp"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Video" id="qkH-0H-igh"/>
+                    <tabBarItem key="tabBarItem" title="Video" image="camera2.png" id="qkH-0H-igh"/>
+                    <connections>
+                        <outlet property="chooseBtn" destination="oOK-Sa-2Xt" id="CGO-gM-mdP"/>
+                        <outlet property="recordBtn" destination="uRA-a4-pcD" id="eu4-6F-J2b"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dVA-7C-e01" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2748" y="-368"/>
+            <point key="canvasLocation" x="2747.826086956522" y="-368.30357142857139"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="5WY-VN-lNU">
@@ -325,4 +367,8 @@
             <point key="canvasLocation" x="1786" y="127"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="camera2.png" width="26" height="23"/>
+        <image name="profileicon.png" width="30" height="30"/>
+    </resources>
 </document>
