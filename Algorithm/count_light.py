@@ -102,26 +102,26 @@ def arg_parse():
 def update_database(image_id, counts):
     con = sqlite3.connect(PATH + "MovingObjectDetecting/Application/imitagram/db.sqlite3")
     cur = con.cursor()
-    query = ''' UPDATE media_media
+    query = '''UPDATE media_media
               SET finished = 1,
-              person = %s,
-              bicycle = %s,
-              car = %s,
-              motorbike = %s,
-              aeroplane = %s,
-              bus = %s,
-              train = %s,
-              truck = %s,
-              boat = %s,
-              traffic_light = %s,
-              fire_hydrant = %s,
-              stop_sign = %s,
-              parking_meter = %s,
-              bench = %s,
-              bird = %s,
-              cat = %s,
-              dog = %s
-              WHERE image_id = %s''' % (counts['person'][0],
+              person = ?,
+              bicycle = ?,
+              car = ?,
+              motorbike = ?,
+              aeroplane = ?,
+              bus = ?,
+              train = ?,
+              truck = ?,
+              boat = ?,
+              traffic_light = ?,
+              fire_hydrant = ?,
+              stop_sign = ?,
+              parking_meter = ?,
+              bench = ?,
+              bird = ?,
+              cat = ?,
+              dog = ?
+              WHERE image_id = ?;''', (counts['person'][0],
                                         counts['bicycle'][0],
                                         counts['car'][0],
                                         counts['motorbike'][0],
@@ -139,6 +139,7 @@ def update_database(image_id, counts):
                                         counts['cat'][0],
                                         counts['dog'][0],
                                         image_id)
+
     print(query)
     cur.execute(query)
     con.commit()
