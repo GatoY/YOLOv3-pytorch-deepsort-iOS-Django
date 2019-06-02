@@ -300,7 +300,7 @@ def main():
         # update database info
         update_database(image_id, counts)
         # cover original video
-        mv_command = '/bin/mv ' + videofile.split('.')[0] + '_counted.'+ videofile.split('.')[1] + videofile
+        mv_command = '/bin/mv ' + videofile.split('.')[0] + '_counted.'+ videofile.split('.')[1]+' ' + videofile
         os.system(mv_command)
         print(mv_command)
 
