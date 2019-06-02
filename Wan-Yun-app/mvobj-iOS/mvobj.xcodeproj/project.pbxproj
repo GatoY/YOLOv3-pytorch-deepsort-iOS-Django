@@ -18,6 +18,18 @@
 		9F3D743F22789DE500E10121 /* signupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3D743E22789DE500E10121 /* signupVC.swift */; };
 		9F3D744122789DFC00E10121 /* resetPasswordVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3D744022789DFC00E10121 /* resetPasswordVC.swift */; };
 		9F3D744322789E3900E10121 /* loginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3D744222789E3900E10121 /* loginVC.swift */; };
+		9FFACB5622A289860077F93F /* Pacifico.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB4D22A289860077F93F /* Pacifico.ttf */; };
+		9FFACB5722A289860077F93F /* Pacifico.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB4D22A289860077F93F /* Pacifico.ttf */; };
+		9FFACB5822A289860077F93F /* Pacifico.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB4D22A289860077F93F /* Pacifico.ttf */; };
+		9FFACB5A22A28D380077F93F /* bg.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB5922A28D380077F93F /* bg.jpeg */; };
+		9FFACB5B22A28D380077F93F /* bg.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB5922A28D380077F93F /* bg.jpeg */; };
+		9FFACB5C22A28D380077F93F /* bg.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB5922A28D380077F93F /* bg.jpeg */; };
+		9FFACB5E22A28FE60077F93F /* bg2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB5D22A28FE60077F93F /* bg2.jpg */; };
+		9FFACB5F22A28FE60077F93F /* bg2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB5D22A28FE60077F93F /* bg2.jpg */; };
+		9FFACB6022A28FE60077F93F /* bg2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB5D22A28FE60077F93F /* bg2.jpg */; };
+		9FFACB6222A2918A0077F93F /* bg3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB6122A2918A0077F93F /* bg3.jpg */; };
+		9FFACB6322A2918A0077F93F /* bg3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB6122A2918A0077F93F /* bg3.jpg */; };
+		9FFACB6422A2918A0077F93F /* bg3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9FFACB6122A2918A0077F93F /* bg3.jpg */; };
 		B934D773320D096786A66327 /* Pods_mvobjTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 878B6C67105F3A045C65B7C0 /* Pods_mvobjTests.framework */; };
 		F9716C289824E7853BDA9DC0 /* Pods_mvobj.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 979ED64A002939AAE3BCDC0E /* Pods_mvobj.framework */; };
 /* End PBXBuildFile section */
@@ -113,6 +125,10 @@
 		9F3D744022789DFC00E10121 /* resetPasswordVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = resetPasswordVC.swift; sourceTree = "<group>"; };
 		9F3D744222789E3900E10121 /* loginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = loginVC.swift; sourceTree = "<group>"; };
 		9F3D745D227B0E8E00E10121 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = ../../../../Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
+		9FFACB4D22A289860077F93F /* Pacifico.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Pacifico.ttf; sourceTree = "<group>"; };
+		9FFACB5922A28D380077F93F /* bg.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg.jpeg; sourceTree = "<group>"; };
+		9FFACB5D22A28FE60077F93F /* bg2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg2.jpg; sourceTree = "<group>"; };
+		9FFACB6122A2918A0077F93F /* bg3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg3.jpg; sourceTree = "<group>"; };
 		A19BA2F888243DEA465F490C /* Pods-mvobjUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mvobjUITests.release.xcconfig"; path = "Target Support Files/Pods-mvobjUITests/Pods-mvobjUITests.release.xcconfig"; sourceTree = "<group>"; };
 		FC287C8A0B36445B6306C671 /* Pods-mvobjUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mvobjUITests.debug.xcconfig"; path = "Target Support Files/Pods-mvobjUITests/Pods-mvobjUITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -179,6 +195,10 @@
 				9F3D741522789D6500E10121 /* Assets.xcassets */,
 				9F3D741722789D6500E10121 /* LaunchScreen.storyboard */,
 				9F3D741A22789D6500E10121 /* Info.plist */,
+				9FFACB4D22A289860077F93F /* Pacifico.ttf */,
+				9FFACB6122A2918A0077F93F /* bg3.jpg */,
+				9FFACB5922A28D380077F93F /* bg.jpeg */,
+				9FFACB5D22A28FE60077F93F /* bg2.jpg */,
 				9F3D741222789D6300E10121 /* mvobj.xcdatamodeld */,
 			);
 			path = mvobj;
@@ -405,8 +425,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FFACB5A22A28D380077F93F /* bg.jpeg in Resources */,
 				9F3D741922789D6500E10121 /* LaunchScreen.storyboard in Resources */,
+				9FFACB6222A2918A0077F93F /* bg3.jpg in Resources */,
 				9F3D741622789D6500E10121 /* Assets.xcassets in Resources */,
+				9FFACB5E22A28FE60077F93F /* bg2.jpg in Resources */,
+				9FFACB5622A289860077F93F /* Pacifico.ttf in Resources */,
 				9F3D741122789D6300E10121 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -415,6 +439,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FFACB5F22A28FE60077F93F /* bg2.jpg in Resources */,
+				9FFACB5B22A28D380077F93F /* bg.jpeg in Resources */,
+				9FFACB6322A2918A0077F93F /* bg3.jpg in Resources */,
+				9FFACB5722A289860077F93F /* Pacifico.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,6 +450,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FFACB6022A28FE60077F93F /* bg2.jpg in Resources */,
+				9FFACB5C22A28D380077F93F /* bg.jpeg in Resources */,
+				9FFACB6422A2918A0077F93F /* bg3.jpg in Resources */,
+				9FFACB5822A289860077F93F /* Pacifico.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
