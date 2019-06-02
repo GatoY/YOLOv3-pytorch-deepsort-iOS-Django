@@ -139,9 +139,10 @@ def update_database(image_id, counts):
                                         counts['cat'][0],
                                         counts['dog'][0],
                                         image_id)
-    print()
     print(query)
-    cur.execute(query).fetchone()
+    cur.execute(query)
+    con.commit()
+    con.close()
     print('update successfully')
 
 
