@@ -25,7 +25,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-DEBUG = 1
+DEBUG = 0
 if DEBUG == 1:
     PATH = '/Users/liuyu/Desktop/'
 else:
