@@ -299,7 +299,7 @@ def main():
         # update database info
         update_database(image_id, counts)
         # cover original video
-        os.system('/bin/mv ' + videofile.split('.')[0] + '_counted.'+videofile.split('.')[1] + videofile)
+        os.system('/bin/mv ' + videofile.split('.')[0] + '_counted.'+ videofile.split('.')[1] + videofile)
 
 
 def gen_new_video(counts, draw, videofile):
