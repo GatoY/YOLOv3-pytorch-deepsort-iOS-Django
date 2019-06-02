@@ -26,7 +26,7 @@ class loginVC: UIViewController {
     
     //variable
     var token:String = ""
-    var loginURL = "http://127.0.0.1:8000/api/v1/rest-auth/login/"
+    var loginURL = "http://128.250.0.207:8000/api/v1/rest-auth/login/"
     
     
     override func viewDidLoad() {
@@ -73,6 +73,7 @@ class loginVC: UIViewController {
         let password = passwordTxt.text!
         let params: [String: Any] = [
             "username": email,
+            "email": email,
             "password": password
         ]
 

@@ -25,7 +25,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-DEBUG = 1
+DEBUG = 0
 if DEBUG == 1:
     PATH = '/Users/liuyu/Desktop/'
 else:
@@ -196,9 +196,9 @@ def main():
         if not ret:
             break
         #
-        # if frames>20:
-        #     break
-        draw[frames] = {'rec':[], 'label':[]}
+        if frames ==20:
+            break
+        draw[frames] = {'rec': [], 'label': []}
 
         # get detections from YOLOv3
         ####################################################
@@ -264,14 +264,14 @@ def main():
 
         for det, lab in zip(detections, labels):
             bbox = det.to_tlbr()
-            draw[frames]['rec'].append([(int(bbox[0]), int(bbox[1])),(int(bbox[2]), int(bbox[3]))])
+            draw[frames]['rec'].append([(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3]))])
             # cv2.rectangle(orig_im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
         ####################################################
 
         frames += 1
         print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
 
-        #TODO play
+        # TODO play
         # if DEBUG == 1:
         #     cv2.imshow("frame", orig_im)
         #     key = cv2.waitKey(1)
@@ -282,7 +282,7 @@ def main():
     cap.release()
 
     # sort up results
-    counts = {i: [j,[]] for (i, j) in zip(classes, [0] * len(classes))}
+    counts = {i: [j, []] for (i, j) in zip(classes, [0] * len(classes))}
     for id in records:
         recorder = records[id]
         result = recorder.count()
@@ -290,18 +290,16 @@ def main():
             counts[result][0] += 1
             counts[result][1].append(id)
 
-
     # id_sort = {i:j for (i,j) in zip(classes, [0]*len(classes))}
     print(counts)
     print('gen new video')
-    gen_new_video(counts, draw,videofile)
+    gen_new_video(counts, draw, videofile)
 
     if DEBUG == 0:
         # update database info
         update_database(image_id, counts)
         # cover original video
-        os.system('/bin/mv ' + videofile.split('.')[0] + '_counted.avi ' + videofile)
-
+        os.system('/bin/mv ' + videofile.split('.')[0] + '_counted.'+ videofile.split('.')[1] + videofile)
 
 
 def gen_new_video(counts, draw, videofile):
@@ -313,6 +311,8 @@ def gen_new_video(counts, draw, videofile):
         if not ret:
             break
 
+        if frames ==20:
+            break
         # initialize new video file
         if frames == 0:
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
@@ -325,7 +325,7 @@ def gen_new_video(counts, draw, videofile):
 
         for label_list in draw_this_frame['label']:
 
-            track_id, label, pos =label_list
+            track_id, label, pos = label_list
             id_list = counts[label][1]
             # print(label)
             # print(track_id)
@@ -335,8 +335,7 @@ def gen_new_video(counts, draw, videofile):
             if track_id not in id_list:
                 continue
             else:
-                cv2.putText(frame, str(label)+str(id_list.index(track_id)+1), pos, 0, 5e-3 * 100, (0, 255, 0), 2)
-
+                cv2.putText(frame, str(label) + str(id_list.index(track_id) + 1), pos, 0, 5e-3 * 100, (0, 255, 0), 2)
 
         # play
         # if DEBUG == 1:
@@ -345,10 +344,11 @@ def gen_new_video(counts, draw, videofile):
         #     if key & 0xFF == ord('q'):
         #         break
         out.write(frame)
-        frames+=1
+        frames += 1
 
     cap.release()
     out.release()
+
 
 if __name__ == '__main__':
     print(DEBUG)
