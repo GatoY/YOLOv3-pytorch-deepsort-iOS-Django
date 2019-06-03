@@ -197,8 +197,8 @@ def main():
         if not ret:
             break
         #
-        if frames ==20:
-            break
+        # if frames ==20:
+        #     break
         draw[frames] = {'rec': [], 'label': []}
 
         # get detections from YOLOv3
@@ -313,8 +313,8 @@ def gen_new_video(counts, draw, videofile):
         if not ret:
             break
 
-        if frames ==20:
-            break
+        # if frames ==20:
+        #     break
         # initialize new video file
         if frames == 0:
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
