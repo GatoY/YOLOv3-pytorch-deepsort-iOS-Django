@@ -89,7 +89,7 @@ def arg_parse():
 
     parser.add_argument("--dataset", dest="dataset", help="Dataset on which the network has been trained",
                         default="pascal")
-    parser.add_argument("--confidence", dest="confidence", help="Object Confidence to filter predictions", default=0.8)
+    parser.add_argument("--confidence", dest="confidence", help="Object Confidence to filter predictions", default=0.85)
     parser.add_argument("--nms_thresh", dest="nms_thresh", help="NMS Threshhold", default=0.5)
     parser.add_argument("--cfg", dest='cfgfile', help="Config file", default="cfg/yolov3.cfg", type=str)
     parser.add_argument("--weights", dest='weightsfile', help="weightsfile", default="yolov3.weights", type=str)
@@ -228,7 +228,8 @@ def main():
         labels = []
         for box in detection_boxes:
             try:
-                if box[-1] <= 18:
+                if box[-1] <= 18 and box[-1] in [0,1,2,5,7,15,16]:
+
                     boxes.append(box[0:4])
                     labels.append(classes[int(box[-1])])
             except:
