@@ -33,10 +33,4 @@ In Application/backend/,
 
 ## Show Case
 
-<object width="425" height="350">
-  <param name="movie" value="http://www.youtube.com/user/wwwLoveWatercom?v=BTRN1YETpyg" />
-  <param name="wmode" value="transparent" />
-  <embed src="https://www.youtube.com/watch?v=ERyFKAjGeZM&feature=youtu.be"
-         type="application/x-shockwave-flash"
-         wmode="transparent" width="425" height="350" />
-</object>
+<img src="https://github.com/GatoY/YOLOv3-pytorch-deepsort-iOS-Django/demo.gif" />
