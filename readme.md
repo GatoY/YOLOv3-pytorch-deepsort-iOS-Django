@@ -33,4 +33,4 @@ In Application/backend/,
 
 ## Show Case
 
-<img src="https://github.com/GatoY/YOLOv3-pytorch-deepsort-iOS-Django/demo.gif" />
+![image](/Users/liuyu/Desktop/MovingObjectDetecting/demo.gif)
