@@ -34,5 +34,5 @@ In Application/backend/,
 ## Show Case
 
 <figure class="video_container">
-  <iframe src="" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://github.com/GatoY/YOLOv3-pytorch-deepsort-iOS-Django/test.mp4" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
