@@ -15,12 +15,18 @@ This project combines YOLOv3(pyTorch) and deepsort. An iOS application is implem
 
 ## How to Use
 
-RUN Algorithm Only,
+### RUN Algorithm Only,
 
+In Algorithm/
 
+	python count_light.py --video videofile
 
-RUN Through Django 
-Go into application/backend,
+### RUN on iOS Application
+
+	brew install node
+
+In Application/backend/,
 	
 	python manage.py migrate
 	python manage.py runserver 
+	

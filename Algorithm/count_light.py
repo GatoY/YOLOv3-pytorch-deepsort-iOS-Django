@@ -152,7 +152,7 @@ def main(args):
         image_id = args.id
         videofile = args.name
     else:
-        videofile = 'vtest.avi'
+        videofile = args
     confidence = float(args.confidence)
     nms_thesh = float(args.nms_thresh)
     num_classes = 17  # we only focus on 17 objects
