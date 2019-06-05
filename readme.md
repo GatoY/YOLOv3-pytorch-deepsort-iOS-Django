@@ -33,4 +33,4 @@ In Application/backend/,
 
 ## Show Case
 
-![image](/Users/liuyu/Desktop/MovingObjectDetecting/demo.gif)
+![image](demo.gif)
