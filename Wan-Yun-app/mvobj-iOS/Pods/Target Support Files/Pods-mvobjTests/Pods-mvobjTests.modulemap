@@ -1,6 +1,0 @@
-framework module Pods_mvobjTests {
-  umbrella header "Pods-mvobjTests-umbrella.h"
-
-  export *
-  module * { export * }
-}
