@@ -1,4 +1,4 @@
-# Multiple Objects Detection, Tracking and Counting based on YOLOv3(Pytorch), Deep SORT, Django and iOS.
+# Multiple Objects Counting
 
 ## About
 
