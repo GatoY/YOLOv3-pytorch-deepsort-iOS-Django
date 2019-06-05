@@ -8,7 +8,6 @@ from util import *
 from darknet import Darknet
 from preprocess import prep_image, inp_to_image, letterbox_image
 import random
-import pickle as pkl
 import argparse
 from recorder import Recorder
 import sqlite3
@@ -92,6 +91,7 @@ def arg_parse():
     parser.add_argument("--confidence", dest="confidence", help="Object Confidence to filter predictions", default=0.85)
     parser.add_argument("--nms_thresh", dest="nms_thresh", help="NMS Threshhold", default=0.5)
     parser.add_argument("--cfg", dest='cfgfile', help="Config file", default="cfg/yolov3.cfg", type=str)
+    parser.add_argument("--debug", dest='debug', help="debug mode", default=0, type=str)
     parser.add_argument("--weights", dest='weightsfile', help="weightsfile", default="yolov3.weights", type=str)
     parser.add_argument("--reso", dest='reso', help=
     "Input resolution of the network. Increase to increase accuracy. Decrease to increase speed", default="416",
@@ -146,8 +146,8 @@ def update_database(image_id, counts):
     print('update successfully')
 
 
-def main():
-    args = arg_parse()
+def main(args):
+
     if DEBUG == 0:
         image_id = args.id
         videofile = args.name
@@ -196,9 +196,6 @@ def main():
         ret, frame = cap.read()
         if not ret:
             break
-        #
-        # if frames ==20:
-        #     break
         draw[frames] = {'rec': [], 'label': []}
 
         # get detections from YOLOv3
@@ -313,9 +310,6 @@ def gen_new_video(counts, draw, videofile):
         ret, frame = cap.read()
         if not ret:
             break
-
-        # if frames ==20:
-        #     break
         # initialize new video file
         if frames == 0:
             fourcc = cv2.VideoWriter_fourcc(*'XVID')
@@ -323,29 +317,23 @@ def gen_new_video(counts, draw, videofile):
                                   frame.shape[:2][::-1])
         draw_this_frame = draw[frames]
         for rec in draw_this_frame['rec']:
-            # print(rec)
             cv2.rectangle(frame, rec[0], rec[1], (255, 0, 0), 2)
 
         for label_list in draw_this_frame['label']:
 
             track_id, label, pos = label_list
             id_list = counts[label][1]
-            # print(label)
-            # print(track_id)
-            # print(id_list)
-            # print(type(track_id))
-            # print(type(id_list[0]))
             if track_id not in id_list:
                 continue
             else:
                 cv2.putText(frame, str(label) + str(id_list.index(track_id) + 1), pos, 0, 5e-3 * 100, (0, 255, 0), 2)
 
         # play
-        # if DEBUG == 1:
-        #     cv2.imshow("frame", frame)
-        #     key = cv2.waitKey(0)
-        #     if key & 0xFF == ord('q'):
-        #         break
+        if DEBUG == 1:
+            cv2.imshow("frame", frame)
+            key = cv2.waitKey(0)
+            if key & 0xFF == ord('q'):
+                break
         out.write(frame)
         frames += 1
 
@@ -354,11 +342,13 @@ def gen_new_video(counts, draw, videofile):
 
 
 if __name__ == '__main__':
+    args = arg_parse()
+    DEBUG = args.debug
     print(DEBUG)
     if DEBUG == 0:
         os.chdir(PATH + 'MovingObjectDetecting/Algorithm')
         try:
-            main()
+            main(args)
         except Exception as e:
             with open('exception.txt', 'w+') as f:
                 f.write(str(datetime.datetime.now()))
