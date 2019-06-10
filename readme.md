@@ -17,7 +17,7 @@ This project combines YOLOv3(pyTorch) and deepsort. An iOS application is implem
 
 ### RUN Algorithm Only,
 
-In Algorithm/
+Under Algorithm/
 
 	python count_light.py --video videofile --debug 1
 
@@ -25,7 +25,7 @@ In Algorithm/
 
 	brew install node
 
-In Application/backend/,
+Under Application/backend/,
 	
 	python manage.py migrate
 	python manage.py runserver 
