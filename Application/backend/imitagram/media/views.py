@@ -10,21 +10,19 @@ from .serializers import CommentSerializer
 import subprocess
 import datetime
 
-
 # PATH ='/Users/liuyu/Desktop/'
 PATH = '/home/ubuntu/'
 
 
-
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
-@parser_classes((MultiPartParser, JSONParser, ))
+@parser_classes((MultiPartParser, JSONParser,))
 def upload(request):
     image = Image(standard_resolution=request.data['file'])
     image.save()
     m = Media(image=image)
     m.user = request.user
-    
+
     m.save()
     id = m.id
     date_time = str(datetime.date.today()).split('-')
@@ -33,14 +31,14 @@ def upload(request):
     day = date_time[2]
     # path = '/home/ubuntu/MovingObjectDetecting/Application/imitagram/upload/media/'+year+'/'+month+'/'+day+'/'
 
-    path = PATH+'MovingObjectDetecting/Application/imitagram/upload/media/'+year+'/'+month+'/'+day+'/'
+    path = PATH + 'MovingObjectDetecting/Application/imitagram/upload/media/' + year + '/' + month + '/' + day + '/'
     dir_name = path + request.data['file'].name
-    count_script=PATH+'MovingObjectDetecting/Algorithm/count_light.py'
-    sys_cmd = ['python3', count_script, '--id',str(id), '--name', dir_name]
+    count_script = PATH + 'MovingObjectDetecting/Algorithm/count_light.py'
+    sys_cmd = ['python3', count_script, '--id', str(id), '--video', dir_name]
     with open('log.txt', 'w+') as f:
         for i in sys_cmd:
             f.write(i)
-    subprocess.Popen(sys_cmd, env={"PATH":PATH+"MovingObjectDetecting/env/bin/"})
+    subprocess.Popen(sys_cmd, env={"PATH": PATH + "MovingObjectDetecting/env/bin/"})
     return Response(status=204)
 
 
@@ -61,6 +59,7 @@ def comments(request, id):
         # TODO
         # update cache counter
         return Response(status=204)
+
 
 @api_view(['GET', 'POST'])
 @permission_classes((IsAuthenticated,))

@@ -19,7 +19,7 @@ This project combines YOLOv3(pyTorch) and deepsort. An iOS application is implem
 
 In Algorithm/
 
-	python count_light.py --video videofile
+	python count_light.py --video videofile --debug 1
 
 ### RUN on iOS Application
 

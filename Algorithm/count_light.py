@@ -122,23 +122,23 @@ def update_database(image_id, counts):
               cat = %s,
               dog = %s
               WHERE image_id = %s;''' % (counts['person'][0],
-                                        counts['bicycle'][0],
-                                        counts['car'][0],
-                                        counts['motorbike'][0],
-                                        counts['aeroplane'][0],
-                                        counts['bus'][0],
-                                        counts['train'][0],
-                                        counts['truck'][0],
-                                        counts['boat'][0],
-                                        counts['traffic light'][0],
-                                        counts['fire hydrant'][0],
-                                        counts['stop sign'][0],
-                                        counts['parking meter'][0],
-                                        counts['bench'][0],
-                                        counts['bird'][0],
-                                        counts['cat'][0],
-                                        counts['dog'][0],
-                                        image_id)
+                                         counts['bicycle'][0],
+                                         counts['car'][0],
+                                         counts['motorbike'][0],
+                                         counts['aeroplane'][0],
+                                         counts['bus'][0],
+                                         counts['train'][0],
+                                         counts['truck'][0],
+                                         counts['boat'][0],
+                                         counts['traffic light'][0],
+                                         counts['fire hydrant'][0],
+                                         counts['stop sign'][0],
+                                         counts['parking meter'][0],
+                                         counts['bench'][0],
+                                         counts['bird'][0],
+                                         counts['cat'][0],
+                                         counts['dog'][0],
+                                         image_id)
     print(query)
     cur.execute(query)
     con.commit()
@@ -147,12 +147,11 @@ def update_database(image_id, counts):
 
 
 def main(args):
-
     if DEBUG == 0:
         image_id = args.id
-        videofile = args.name
+        videofile = args.video
     else:
-        videofile = args
+        videofile = args.video
     confidence = float(args.confidence)
     nms_thesh = float(args.nms_thresh)
     num_classes = 17  # we only focus on 17 objects
@@ -225,8 +224,7 @@ def main(args):
         labels = []
         for box in detection_boxes:
             try:
-                if box[-1] <= 18 and box[-1] in [0,1,2,5,7,15,16]:
-
+                if box[-1] <= 18 and box[-1] in [0, 1, 2, 5, 7, 15, 16]:
                     boxes.append(box[0:4])
                     labels.append(classes[int(box[-1])])
             except:
@@ -270,7 +268,7 @@ def main(args):
         frames += 1
         print("FPS of the video is {:5.2f}".format(frames / (time.time() - start)))
 
-        # TODO play
+        # play
         # if DEBUG == 1:
         #     cv2.imshow("frame", orig_im)
         #     key = cv2.waitKey(1)
@@ -298,9 +296,10 @@ def main(args):
         # update database info
         update_database(image_id, counts)
         # cover original video
-        mv_command = '/bin/mv ' + videofile.split('.')[0] + '_counted.'+ videofile.split('.')[1]+' ' + videofile
+        mv_command = '/bin/mv ' + videofile.split('.')[0] + '_counted.' + videofile.split('.')[1] + ' ' + videofile
         os.system(mv_command)
         print(mv_command)
+
 
 def gen_new_video(counts, draw, videofile):
     cap = cv2.VideoCapture(videofile)  # open videofile
@@ -354,4 +353,4 @@ if __name__ == '__main__':
                 f.write(str(datetime.datetime.now()))
                 f.write(str(e))
     else:
-        main()
+        main(args)
