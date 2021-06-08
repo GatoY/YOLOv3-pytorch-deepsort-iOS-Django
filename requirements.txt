@@ -35,5 +35,5 @@ Werkzeug==0.15.4
 django-allauth==0.37.1
 django-rest-auth==0.9.3
 djangorestframework==3.9.1
-Pillow==5.2.0
+Pillow==8.2.0
 
