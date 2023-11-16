@@ -31,7 +31,7 @@ tensorflow-estimator==1.13.0
 termcolor==1.1.0
 torch==1.1.0
 torchvision==0.3.0
-Werkzeug==0.15.4
+Werkzeug==2.3.8
 django-allauth==0.37.1
 django-rest-auth==0.9.3
 djangorestframework==3.9.1
